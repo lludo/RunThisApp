@@ -5,3 +5,9 @@
 /install/.DS_Store
 /install/.DS_Store
 /install/documentation/.DS_Store
+/lib/vendor/Symfony/.DS_Store
+/lib/vendor/Symfony/Component/.DS_Store
+/lib/vendor/.DS_Store
+/lib/Doctrine/.DS_Store
+/lib/Doctrine/ORM/.DS_Store
+/lib/Doctrine/.DS_Store
