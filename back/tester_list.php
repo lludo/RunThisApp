@@ -16,9 +16,6 @@ use Entities\Application,
 require_once __DIR__ . '/../core/index.php';
 
 $entityManager = initDoctrine();
-echo '<p>Entity manager is ready</p>' . PHP_EOL;
-
-## PUT YOUR TEST CODE BELOW
 
 // Retrieve all testers
 date_default_timezone_set('Europe/Berlin');
