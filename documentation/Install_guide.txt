@@ -1,0 +1,11 @@
+
+These folders needs to be writable: (chmod ugo+rwx __file__)
+
+- /core/
+- /core/database.sqlite
+- /core/Proxies/
+
+
+
+
+PHP 5 required

@@ -55,16 +55,36 @@ class Tester {
         $this->invitations = new ArrayCollection();
     }
     
-    public function addApplication($application){
+    public function setName($name) {
+    	$this->name = $name;
+    }
+    
+    public function getName() {
+    	return $this->name;
+    }
+    
+    public function addApplication($application) {
         $this->applications[] = $application;
     }
     
-    public function addDevice($device){
+    public function getApplications() {
+        return $this->applications;
+    }
+   	
+    public function addDevice($device) {
         $this->devices[] = $device;
     }
     
-    public function addInvitation($invitation){
+    public function getDevices() {
+        return $this->devices;
+    }
+    
+    public function addInvitation($invitation) {
         $this->invitations[] = $invitation;
+    }
+    
+    public function getInvitations() {
+       return $this->invitations;
     }
     
     public function setDeveloper($developer) {
