@@ -48,6 +48,46 @@ class Device {
      */
     private $tester;
     
+    public function setName($name) {
+    	$this->name = $name;
+    }
+    
+    public function getName() {
+    	return $this->name;
+    }
+    
+    public function setDateCreation($dateCreation) {
+    	$this->dateCreation = $dateCreation;
+    }
+    
+    public function getDateCreation() {
+    	return $this->dateCreation;
+    }
+    
+    public function setSystemVersion($systemVersion) {
+    	$this->systemVersion = $systemVersion;
+    }
+    
+    public function getSystemVersion() {
+    	return $this->systemVersion;
+    }
+       
+    public function setModel($model) {
+    	$this->model = $model;
+    }
+    
+    public function getModel() {
+    	return $this->model;
+    }
+    
+    public function setUdid($udid) {
+    	$this->udid = $udid;
+    }
+    
+    public function getUdid() {
+    	return $this->udid;
+    }
+    
     public function setInvitation($invitation) {
     	if ($this->invitation !== $invitation) {
         	$invitation->addDevice($this);

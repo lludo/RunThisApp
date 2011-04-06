@@ -1,31 +1,28 @@
 <?php
 
-require_once(dirname(__FILE__).'/lib/cfpropertylist/CFPropertyList.php');
-require_once(dirname(__FILE__).'/lib/log.php');
+use Entities\Device;
 
+require_once __DIR__ . '/lib/cfpropertylist/CFPropertyList.php';
+require_once __DIR__ . '/lib/log.php';
+require_once __DIR__ . '/core/index.php';
 
-
-function retreivePlistFromAsn($ciphertext_file)
-{
-
+function retreivePlistFromAsn($ciphertext_file) {
+	
 	//Title: Simple PHP BER/DER/ASN.1 basic decoder
 	//Author: Jean-Luc Cyr
 	//Date: 2008-02-13
 	//Desc: Simple BER Printable string dumper
 	//	read BER data from a file
-	 
-	// Set input filename
-	$filename = 'd:\payload.bin';
+	
 	// Set max number of tag to parse (0 = no limit)
 	$limit = 0;
 	 
 	//Open data file
-	$f = fopen($filename,'rb');
+	$f = fopen($ciphertext_file,'rb');
 	//Set read tag number to 0
 	$c=0;
 	//While not end of file
-	while(!feof($f) && empty($plist))
-	{
+	while(!feof($f) && empty($plist)) {
 		//Read first block data type
 		$type = ord(fread($f,1));
 		if ($type==0)
@@ -38,8 +35,7 @@ function retreivePlistFromAsn($ciphertext_file)
 		//If first bit of len is set (1)
 		//we have a multiple bit len to read
 		//echo "Read Len ".($len)." Bytes\r\n";
-		if (($len & 128)==128)
-		{
+		if (($len & 128)==128) {
 			//echo "Big Len ".($len & 127)." Bytes\r\n";
 			for ($i = 0; $i < ($len & 127); $i++)
 			  $le = $le * 256 + ord(fread($f,1));
@@ -47,8 +43,7 @@ function retreivePlistFromAsn($ciphertext_file)
 		}
 		//Findout data type (first 2 bits)
 		$cl = ($type & (128+64) ) >> 6;
-		switch($cl)
-		{
+		switch($cl) {
 		 case 0:
 			$cla = 'Universal';
 			break;
@@ -71,8 +66,7 @@ function retreivePlistFromAsn($ciphertext_file)
 			$data = fread($f, $len);
 		}
 		//Display data chunk based on type
-		switch($type)
-		{
+		switch($type) {
 		 case 2: // integer
 			break;
 		 case 3: // bit string
@@ -141,24 +135,36 @@ while (($e = openssl_error_string()) !== false) {
 }
 */
 $plistValue = retreivePlistFromAsn($ciphertext_file);
-if (empty($plistValue))
-{
+if (empty($plistValue)) {
 	die("unable to read plist from configuration profile challenge.");
 }
 
-
 $plist = new CFPropertyList();
 $plist->parse( $plistValue, CFPropertyList::FORMAT_XML);
-
 
 //echo '<pre>';
 //var_dump( $plist->toArray() );
 $plistData = $plist->toArray();
 
-$lf->writeln('UDID='.$plistData['UDID']);
-$lf->writeln('mail='.$_GET['mail']);
-$lf->writeln('app='.$_GET['app']);
-$lf->writeln('key='.$_GET['key']);
+//$lf->writeln('UDID='.$plistData['UDID']);
+//$lf->writeln('mail='.$_GET['mail']);
+//$lf->writeln('app='.$_GET['app']);
+//$lf->writeln('key='.$_GET['key']);
 //echo '</pre>';
+
+$entityManager = initDoctrine();
+date_default_timezone_set('Europe/Paris');
+
+$device = new Device;
+$device->setName($plistData['DEVICE_NAME']);
+$device->setDateCreation(new \DateTime("now"));
+$device->setSystemVersion($plistData['VERSION']);
+$device->setModel($plistData['PRODUCT']);
+$device->setUdid($plistData['UDID']);
+//$device->setInvitation($invitation);
+//$device->setTester($tester);
+
+$entityManager->persist($device);
+$entityManager->flush();
 
 ?>
