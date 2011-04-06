@@ -15,7 +15,7 @@ class Tester {
     private $id;
     
     /**
-     * @Column(type="string", length=50)
+     * @Column(type="string", length=50, unique=true)
      */
     private $email;
     

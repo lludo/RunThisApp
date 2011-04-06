@@ -155,6 +155,12 @@ $plistData = $plist->toArray();
 $entityManager = initDoctrine();
 date_default_timezone_set('Europe/Paris');
 
+// Retrieve the tester with his mail (unique)
+$tester = $entityManager->getRepository('Entities\Tester')->findOneBy(array('email' => $_GET['mail']));
+
+//TODO: use $_GET['app'] and $_GET['key'] to verify response integrity
+//TODO: verify if the device does not already exist (Update data for the same udid if it exists)
+
 $device = new Device;
 $device->setName($plistData['DEVICE_NAME']);
 $device->setDateCreation(new \DateTime("now"));
@@ -162,7 +168,7 @@ $device->setSystemVersion($plistData['VERSION']);
 $device->setModel($plistData['PRODUCT']);
 $device->setUdid($plistData['UDID']);
 //$device->setInvitation($invitation);
-//$device->setTester($tester);
+$device->setTester($tester);
 
 $entityManager->persist($device);
 $entityManager->flush();
