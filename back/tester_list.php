@@ -14,6 +14,7 @@ use Entities\Application,
     Entities\Version;
 
 require_once __DIR__ . '/../core/index.php';
+require_once __DIR__ . '/../core/functions.php';
 
 $entityManager = initDoctrine();
 
@@ -35,7 +36,7 @@ foreach ($testers AS $tester) {
     	} else {
     		echo '<ul>' . PHP_EOL;
     		foreach ($tester->getDevices() AS $device) {
-	        	echo '<li>Device: ' . $device->getModel() . ', UDID: ' . $device->getUdid() . '</li>' . PHP_EOL;
+	        	echo '<li>Device: ' . getReadableDeviceName($device->getModel()) . ', UDID: ' . $device->getUdid() . '</li>' . PHP_EOL;
 	        }
 	        echo '</ul>' . PHP_EOL;
         }
