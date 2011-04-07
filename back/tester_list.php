@@ -1,9 +1,10 @@
 <!doctype html>
 <html>
 <head>
-	<title>Inscription</title>
+	<title>Run This App | Testers</title>
 </head>
 <body>
+	<a href="tester_new.php">Add a new tester</a>
 <?php
 
 use Entities\Application, 

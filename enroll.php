@@ -6,22 +6,22 @@
  */
 require_once(dirname(__FILE__).'/lib/cfpropertylist/CFPropertyList.php');
 
-function general_payload()
-{
+function general_payload() {
+	
 	$payload = array();
 	$payload['PayloadVersion'] = 1; // do not modify
 	$payload['PayloadUUID'] = uniqid(); // must be unique
 	
 	//will be shown to the user.
-	$payload['PayloadOrganization'] = "GlanceMyApp";
+	$payload['PayloadOrganization'] = "RunThisApp";
 	return $payload;
 }
 
 function service_address() {
+	
+	$server = $_SERVER['SERVER_NAME'];
 	if ($_SERVER['SERVER_PORT'] != '80') {
-		$server .= $_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'];
-	} else {
-		$server .= $_SERVER['SERVER_NAME'];
+		$server .= ':'.$_SERVER['SERVER_PORT'];
 	}
 	return $server . dirname($_SERVER['REQUEST_URI']);
 }
@@ -31,16 +31,16 @@ function profile_service_payload($challenge) {
     $payload = general_payload();
 
     $payload['PayloadType'] = "Profile Service"; // do not modify
-    $payload['PayloadIdentifier'] = "com.glancemyapp.mobileconfig.profile-service";
+    $payload['PayloadIdentifier'] = "com.runthisapp.mobileconfig.profile-service";
 
     // strings that show up in UI, customisable
-    $payload['PayloadDisplayName'] = "GlanceMyApp Profile Service";
-    $payload['PayloadDescription'] = "Install this profile to allow applications deployement from GlanceMyApp";
+    $payload['PayloadDisplayName'] = "RunThisApp Profile Service";
+    $payload['PayloadDescription'] = "Install this profile to allow applications deployement from RunThisApp";
     $payload_content = array();
 	$mail = $_GET['mail'];
 	$app = $_GET['app'];
     $key = $_GET['key'];
-    $payload_content['URL'] = 'http://' . service_address() . '/profile.php?mail='.$mail.'&app='.$app.'&key='.$key;
+    $payload_content['URL'] = 'http://' . service_address() . 'profile.php?mail='.$mail.'&app='.$app.'&key='.$key;
     $payload_content['DeviceAttributes'] = array(
         'UDID', 
         'VERSION',

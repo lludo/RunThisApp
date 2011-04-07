@@ -18,8 +18,10 @@ function getReadableDeviceName($deviceModel) {
 	'iPad2,1' => 'iPad 2 (WiFi)',
 	'iPad2,2' => 'iPad 2 (WiFi+3G GSM)',
 	'iPad2,3' => 'iPad 2 (WiFi+3G CDMA)',
-	'Apple TV 2G' => 'Apple TV (2nd generation)',
+	'Apple2,1' => 'Apple TV (2nd generation)',
 	'i386' => 'iOS Simulator');
+	
+	//TODO: add error management if device is unknown
 	
 	return $devices[$deviceModel];
 }
@@ -72,6 +74,8 @@ function getReadableOsVersion($osBuild) {
 	'8E200' => '4.2.6',
 	'8F190' => '4.3',
 	'8G4' => '4.3.1');
+	
+	//TODO: add error management if build is unknown
 	
 	return $os[$osBuild];
 }
