@@ -9,7 +9,7 @@
 
 	<div id="header">
 		<h2><a href="./">Run This App</a></h2>
-		<ul class="devcenterMenu">
+		<ul class="menu">
 			<li class="invitations"><a href="back/invitation_list.php">Invitations</a></li>
 			<li class="testers"><a href="back/tester_list.php">Testers</a></li>
         	<li class="applications"><a href="back/application_list.php">Applications</a></li>
@@ -22,9 +22,9 @@
 		</ul>
 	</div>
 	
-	<div id="content" class="grid2colb box grid2colb-box">
-		<div class="cap boxtop"></div>
-		<div class="column first grid2col">
+	<div id="content" class="box">
+		<div class="boxtop"></div>
+		<div class="column first">
 			<div class="boxheader">			
 				<h2>Run This App - First tests</h2>
 			</div>
@@ -39,22 +39,22 @@
 			<div class="boxheader">
 				<h2>Deployment steps</h2>
 			</div>
-			<div class="promo quickstart">
+			<div class="function">
 				<h6>Send Invitations</h6>
 				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 			</div>
 			<hr>
-			<div class="promo quickstart">
+			<div class="function">
 				<h6>Tester get registered</h6>
 				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 			</div>
 			<hr>
-			<div class="promo quickstart">
+			<div class="function">
 				<h6>They install your app Over-The-Air</h6>				
 				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 			</div>
 		</div>	
-		<div class="cap boxbottom"></div>
+		<div class="boxbottom"></div>
 	</div>
 	
 </body>
