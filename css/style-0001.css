@@ -198,7 +198,7 @@ hr {
     display: inline;
     float: right;
     font-size: 11px;
-    margin: 0.6em 18px 0;
+    margin: 6.8em 18px 0;
 }
 
 #header ul.login li {
@@ -223,6 +223,7 @@ hr {
     margin: 0 -2px;
     text-indent: -9999px;
     width: 598px;
+    height: 78px;
 }
 
 #header ul.menu {
@@ -242,9 +243,7 @@ hr {
     text-decoration: none;
 }
 
-#header ul.menu li.invitations.active {
-    background: url("../img/header_active_1.png") no-repeat scroll 0 0 transparent;
-    color: #cccccc;
+#header ul.menu li.invitations {
     height: 50px;
     padding-top: 15px;
     position: absolute;
@@ -252,9 +251,12 @@ hr {
     top: 13px;
 }
 
-#header ul.menu li.testers.active {
-    background: url("../img/header_active_2.png") no-repeat scroll 0 0 transparent;
+#header ul.menu li.invitations.active {
+    background: url("../img/header_active_1.png") no-repeat scroll 0 0 transparent;
     color: #cccccc;
+}
+
+#header ul.menu li.testers {
     height: 50px;
     padding-top: 15px;
     position: absolute;
@@ -262,15 +264,22 @@ hr {
     top: 13px;
 }
 
+#header ul.menu li.testers.active {
+    background: url("../img/header_active_2.png") no-repeat scroll 0 0 transparent;
+    color: #cccccc;
+}
+
+#header ul.menu li.applications {
+    height: 50px;
+    padding-top: 15px;
+    position: absolute;
+    right: 10px;
+    top: 13px;
+}
+
 #header ul.menu li.applications.active {
     background: url("../img/header_active_3.png") no-repeat scroll 0 0 transparent;
     color: #cccccc;
-    height: 50px;
-    padding-top: 15px;
-    position: relative;
-    right: 2px;
-    top: -15px;
-    width: 133px;
 }
 
 #header ul.menu li.active a {

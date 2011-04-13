@@ -1,24 +1,24 @@
 <!doctype html>
-<html lang="en-us">
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Run This App | iOS Deployment Applications</title>
-	<link href="css/style-0001.css" media="screen" type="text/css" rel="stylesheet">
+	<title>Run This App | Add Application</title>
+	<link href="../css/style-0001.css" media="screen" type="text/css" rel="stylesheet">
 </head>
 <body>
 
 	<div id="header">
-		<h2><a href="./">Run This App</a></h2>
+		<h2><a href="../">Run This App</a></h2>
 		<ul class="menu">
-			<li class="invitations"><a href="back/invitation_list.php">Invitations</a></li>
-			<li class="testers"><a href="back/tester_list.php">Testers</a></li>
-        	<li class="applications"><a href="back/application_list.php">Applications</a></li>
+			<li class="invitations"><a href="invitation_list.php">Invitations</a></li>
+			<li class="testers"><a href="tester_list.php">Testers</a></li>
+        	<li class="applications active">Applications</li>
 		</ul>
 		
 		<ul class="login">
 			<li>Hi, Guest</li>
-			<li><a href="back/register.php">Register</a></li>	
-			<li><a href="back/login.php">Log In</a></li>
+			<li><a href="register.php">Register</a></li>	
+			<li><a href="login.php">Log In</a></li>
 		</ul>
 	</div>
 	
@@ -26,12 +26,17 @@
 		<div class="boxtop"></div>
 		<div class="column first">
 			<div class="boxheader">			
-				<h2>Run This App - First tests</h2>
+				<h2>Add New Application</h2>
 			</div>
 			<div>
-				<p>Click this link on your device to subscribe to the best test program of iOS applications (User 1): <br><a href="enroll.php?mail=test@test.com&app=1234&key=5678">enroll.php?user=test@test.com&app=1234&key=5678</a></p>
-				<h3 class="underline">&nbsp;</h3>
-				<p>Click this link on your device to subscribe to the best test program of iOS applications (User 2): <br><a href="enroll.php?mail=test2@test.com&app=1234&key=5678">enroll.php?user=test2@test.com&app=1234&key=5678</a></p>
+				
+				<form name="new_app" method="post" enctype="multipart/form-data"  action="">
+					<input type="file" name="app_file">
+					<input name="Submit" type="submit" value="Upload application">	
+				</form>
+				
+				<p>//TODO</p>
+				
 			</div>
 		</div>
 		
@@ -56,6 +61,6 @@
 		</div>	
 		<div class="boxbottom"></div>
 	</div>
-	
+
 </body>
 </html>

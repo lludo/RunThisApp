@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Run This App | Testers</title>
+	<title>Run This App | Applications</title>
 	<link href="../css/style-0001.css" media="screen" type="text/css" rel="stylesheet">
 </head>
 <body>
@@ -35,7 +35,26 @@
 				
 				<?php
 				
-				echo '//TODO' . PHP_EOL;
+				use Entities\Application, 
+				    Entities\Developer,
+				    Entities\Device,
+				    Entities\Invitation,
+				    Entities\Tester,
+				    Entities\Version;
+				
+				require_once __DIR__ . '/../core/index.php';
+				
+				$entityManager = initDoctrine();
+				
+				// Retrieve all testers
+				date_default_timezone_set('Europe/Berlin');
+				$applications = $entityManager->getRepository('Entities\Application')->findAll();
+				
+				echo '<ul>';
+				foreach ($applications AS $application) {
+				    echo '<li>Application: ' . $application->getName() . '</li>' . PHP_EOL;
+				}
+				echo '</ul>' . PHP_EOL;
 				
 				?>
 	
