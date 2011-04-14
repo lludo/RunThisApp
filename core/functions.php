@@ -72,8 +72,11 @@ function getReadableOsVersion($osBuild) {
 	'8C148a' => '4.2.1',
 	'8E128' => '4.2.5',
 	'8E200' => '4.2.6',
+	'8E303' => '4.2.7',
 	'8F190' => '4.3',
-	'8G4' => '4.3.1');
+	'8G4' => '4.3.1',
+	'8H7' => '4.3.2',
+	'8H8' => '4.3.2');
 	
 	//TODO: add error management if build is unknown
 	
