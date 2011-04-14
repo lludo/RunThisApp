@@ -44,7 +44,7 @@
 					if ( file_exists($plistPath . '.app/Info.plist') ) {
 							$plistFilePath = $plistPath . '.app/Info.plist';
 					} else {
-							$plistFilePath = $plistPath . '.app/' . appName . '-Info.plist';
+							$plistFilePath = $plistPath . '.app/' . $appName . '-Info.plist';
 					}
 					
 					return $plistFilePath;
@@ -78,13 +78,24 @@
 					  	$plist->parse( $plistValue, CFPropertyList::FORMAT_AUTO);
 					  	$plistData = $plist->toArray();
 						
-						echo 'App display name: ' . $plistData['CFBundleDisplayName'] . '<br />'; //TODO if '${PRODUCT_NAME}' use <app_ame>
-						echo 'Icon file: ' . $plistData['CFBundleIconFile'] . '<br />'; //TODO if empty use 'Icon.png'	
-					  	echo 'Bundle identifier: ' . $plistData['CFBundleIdentifier'] . '<br />'; //TODO if contains('${PRODUCT_NAME:rfc1034identifier}') replace by <app_ame>
+						//TODO if '${PRODUCT_NAME}' use <app_ame>
+						echo 'App display name: ' . $plistData['CFBundleDisplayName'] . '<br />';
+						
+						//Get icon, if empty use 'Icon.png'	
+						if ( isset($plistData['CFBundleIconFile']) && $plistData['CFBundleIconFile'] != 0 ) {
+							$iconFile = $plistData['CFBundleIconFile'];
+						} else {
+							$iconFile = 'Icon.png';
+						}
+						echo 'Icon file: ' . $iconFile . '<br />';
+					  	
+					  	//TODO if contains('${PRODUCT_NAME:rfc1034identifier}') replace by <app_ame>
+					  	echo 'Bundle identifier: ' . $plistData['CFBundleIdentifier'] . '<br />';
+					  	
 					  	echo 'Version: ' . $plistData['CFBundleVersion'] . '<br />';
 					  	
 					  	$application->setName($plistData['CFBundleDisplayName']);
-					  	$application->setIconFile($plistData['CFBundleIconFile']);
+					  	$application->setIconFile($iconFile);
 					  	$application->setBundleId($plistData['CFBundleIdentifier']);
 					  	
 					  	//TODO create a first version of this app

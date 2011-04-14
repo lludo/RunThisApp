@@ -52,7 +52,10 @@
 				
 				echo '<ul>';
 				foreach ($applications AS $application) {
-				    echo '<li>Application: <br/>->name: ' . $application->getName() . '<br />->bundle: ' . $application->getBundleId() . '<br />->link: <a href="../app/' . $application->getName() . '.ipa">../app/' . $application->getName() . '.ipa</a></li>' . PHP_EOL;
+				    echo '<li>Application: <br/>->name: ' . $application->getName() . '<br />' . 
+				    	'->bundle: ' . $application->getBundleId() . '<br />' . 
+				    	'->app link: <a href="../app/' . $application->getName() . '.ipa">../app/' . $application->getName() . '.ipa</a><br />' . 
+				    	'->install on device: <a href="itms-services://?action=download-manifest&url=http://www.runthisapp.com/app/' . $application->getName() . '.plist">Install on device</a></li>' . PHP_EOL;
 				}
 				echo '</ul>' . PHP_EOL;
 				
