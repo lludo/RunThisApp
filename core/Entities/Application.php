@@ -66,6 +66,22 @@ class Application {
     	$this->name = $name;
     }
     
+    public function getIconFile() {
+    	return $this->iconFile;
+    }
+    
+    public function setIconFile($iconFile) {
+    	$this->iconFile = $iconFile;
+    }
+    
+    public function getBundleId() {
+    	return $this->bundleId;
+    }
+    
+    public function setBundleId($bundleId) {
+    	$this->bundleId = $bundleId;
+    }
+    
     public function addTester($tester){
         $this->testers[] = $tester;
     }

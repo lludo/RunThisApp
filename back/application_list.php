@@ -52,7 +52,7 @@
 				
 				echo '<ul>';
 				foreach ($applications AS $application) {
-				    echo '<li>Application: ' . $application->getName() . '</li>' . PHP_EOL;
+				    echo '<li>Application: <br/>->name: ' . $application->getName() . '<br />->bundle: ' . $application->getBundleId() . '<br />->link: <a href="../app/' . $application->getName() . '.ipa">../app/' . $application->getName() . '.ipa</a></li>' . PHP_EOL;
 				}
 				echo '</ul>' . PHP_EOL;
 				

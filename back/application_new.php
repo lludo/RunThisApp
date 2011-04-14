@@ -32,7 +32,10 @@
 				
 				<?php
 				
+				use Entities\Application;
+				
 				require_once __DIR__ . '/../lib/cfpropertylist/CFPropertyList.php';
+				require_once __DIR__ . '/../core/index.php';
 				
 				function getInfoPlistPath($appName) {
 				
@@ -65,93 +68,129 @@
 					}
 				}
 				
-				function readAppInfoAndSaveThem($plistfile, $application) {
+				function fillAppInfoWithPlist($plistfile, $application) {
 				
 					$plistValue = file_get_contents($plistfile);
 					if (empty($plistValue)) {
-						die("Unable to read application plist file.<br />");
+						return false;
+				  	} else {
+					  	$plist = new CFPropertyList();
+					  	$plist->parse( $plistValue, CFPropertyList::FORMAT_AUTO);
+					  	$plistData = $plist->toArray();
+						
+						echo 'App display name: ' . $plistData['CFBundleDisplayName'] . '<br />'; //TODO if '${PRODUCT_NAME}' use <app_ame>
+						echo 'Icon file: ' . $plistData['CFBundleIconFile'] . '<br />'; //TODO if empty use 'Icon.png'	
+					  	echo 'Bundle identifier: ' . $plistData['CFBundleIdentifier'] . '<br />'; //TODO if contains('${PRODUCT_NAME:rfc1034identifier}') replace by <app_ame>
+					  	echo 'Version: ' . $plistData['CFBundleVersion'] . '<br />';
+					  	
+					  	$application->setName($plistData['CFBundleDisplayName']);
+					  	$application->setIconFile($plistData['CFBundleIconFile']);
+					  	$application->setBundleId($plistData['CFBundleIdentifier']);
+					  	
+					  	//TODO create a first version of this app
+					  	//$application->addVersion($version);
+					  	
+					  	return true;
 				  	}
-				    
-				  	$plist = new CFPropertyList();
-				  	$plist->parse( $plistValue, CFPropertyList::FORMAT_AUTO);
-				  	$plistData = $plist->toArray();
-					
-					echo 'App display name: ' . $plistData['CFBundleDisplayName'] . '<br />'; //TODO if '${PRODUCT_NAME}' use <app_ame>
-					echo 'Icon file: ' . $plistData['CFBundleIconFile'] . '<br />'; //TODO if empty use 'Icon.png'	
-				  	echo 'Bundle identifier: ' . $plistData['CFBundleIdentifier'] . '<br />'; //TODO if contains('${PRODUCT_NAME:rfc1034identifier}') replace by <app_ame>
-				  	echo 'Version: ' . $plistData['CFBundleVersion'] . '<br />';
-				  	
-				  	//TODO write these values to he object '$application' and save them in database
 				}
 				
 				// If we have uploaded a file we process it else we ask for it
 				if ( !empty($_FILES['app_file']) ) {
 				
-					if ($_FILES["app_file"]["error"] > 0) {
-					  	if ($_FILES["app_file"]["error"] == 1) {
-					  	 	echo 'Error: The uploaded file exceeds the upload_max_filesize directive in php.ini.';
-					  	} else if ($_FILES["app_file"]["error"] == 4) {
-					  	 	echo 'Error: No file was uploaded.';
+					if ($_FILES['app_file']['error'] > 0) {
+					  	if ($_FILES['app_file']['error'] == 1) {
+					  	 	echo 'Error: The uploaded file exceeds the upload_max_filesize directive in php.ini.<br />';
+					  	} else if ($_FILES['app_file']['error'] == 4) {
+					  	 	echo 'Error: No file was uploaded.<br />';
 					  	} else {
-					  		echo "Error code: " . $_FILES["app_file"]["error"] . "<br />";
+					  		echo 'Error: code #' . $_FILES['app_file']['error'] . '<br />';
 					  	}
 					} else {
 						
-						//echo "Upload: " . $_FILES["app_file"]["name"] . "<br />";
-						echo "Type: " . $_FILES["app_file"]["type"] . "<br />";
-						echo "Size: " . ($_FILES["app_file"]["size"] / 1024) . " Kb<br />";
-						//echo "Temp file: " . $_FILES["app_file"]["tmp_name"] . " Kb<br />";
+						//echo 'Upload: ' . $_FILES['app_file']['name'] . '<br />';
+						echo 'Type: ' . $_FILES['app_file']['type'] . '<br />';
+						echo 'Size: ' . ($_FILES['app_file']['size'] / 1024) . ' Kb<br />';
+						//echo 'Temp file: ' . $_FILES['app_file']['tmp_name'] . '<br />';
 					  
-						if ( $_FILES["app_file"]["type"] == 'application/x-itunes-ipa' ) {
+						if ( $_FILES['app_file']['type'] == 'application/x-itunes-ipa' ) {
+					  		$error = '';
 					  		
-					 		// Configuration - Your Options
-					   		$allowed_filetypes = array('.jpg','.png','.ipa'); // Types of file allowed.
-					 		$max_filesize = 20971520; // Maximum filesize in BYTES (currently 20MB).
-					 		$upload_path = '../app/'; // The place the files will be uploaded to (currently a 'files' directory).
+					 		// Configuration options
+					   		$allowed_filetypes = array('.jpg','.png','.ipa'); // Types of file allowed
+					 		$max_filesize = 20971520; // Maximum filesize in BYTES (currently 20MB)
+					 		$upload_path = '../app/'; // The place where files will be uploaded
 					 		
 							$filename = $_FILES['app_file']['name']; // Get the name of the file (including file extension).
 							//TODO verify to grab the last '.' to get only extension!!! and not version & extension
 					 		$ext = substr($filename, strpos($filename,'.'), strlen($filename)-1); // Get the extension from the filename.
 					  		
-					    	// Check if the filetype is allowed, if not DIE and inform the user.
-					 		if(!in_array($ext,$allowed_filetypes))
-					  			die('The file you attempted to upload is not allowed: ' . $ext);
-							
-							// Now check the filesize, if it is too large then DIE and inform the user.
-							if(filesize($_FILES['app_file']['tmp_name']) > $max_filesize)
-								die('The file you attempted to upload is too large.');
-							
-					  		// Check if we can upload to the specified path, if not DIE and inform the user.
-					 		if(!is_writable($upload_path))
-					    		die('You cannot upload to the specified directory, please CHMOD it to 777.');
-							
-							// Upload the file to your specified path.
-							if(move_uploaded_file($_FILES['app_file']['tmp_name'],$upload_path . $filename)) {
-					 			echo 'Your file upload was successful at: ' . $upload_path . $filename . '<br />';
-					   			
-					   			$zip = new ZipArchive;
-					  			$res = $zip->open($upload_path . $filename);
-					   			if (unzipApplication($upload_path, $filename)) {
-					     			echo 'Unzip ok.<br>';
-					    			
-					      			//TODO this needs to be verify for exotic names
-					    			$appName = substr($filename, 0, strpos($filename,'.'));
-					   				
-					     			// We get the Info.plist of the app if it exists else <app_name>-Info.plist
-					     			$plistfile = getInfoPlistPath($appName);
-					      			//echo 'Plist file: ' . $plistfile . '<br />';
-					    			
-					    			//TODO create an application object and set basic data here
-					    			$application = null;
-					    			
-					    			readAppInfoAndSaveThem($plistfile, $application);
-									
+					    	// Check if the filetype is allowed
+					 		if(!in_array($ext, $allowed_filetypes)) {
+					  			$error = 'Error: The file you attempted to upload is not allowed: ' . $ext . '<br />';
+							}
+							// Now check the filesize
+							if(filesize($_FILES['app_file']['tmp_name']) > $max_filesize) {
+								$error = 'Error: The file you attempted to upload is too large.<br />';
+							}
+					  		// Check if we can upload to the specified path
+					 		if(!is_writable($upload_path)) {
+					    		$error = 'Error: You cannot upload to the specified directory, please CHMOD it to 777.<br />';
+							}
+							if ( $error == '' ) {
+								// Upload the file to your specified path.
+								if(move_uploaded_file($_FILES['app_file']['tmp_name'],$upload_path . $filename)) {
+						 			echo 'Your file upload was successful at: ' . $upload_path . $filename . '<br />';
+						   			
+						   			$zip = new ZipArchive;
+						  			$res = $zip->open($upload_path . $filename);
+						   			if (unzipApplication($upload_path, $filename)) {
+						     			echo 'Unzip ok.<br>';
+						    			
+						      			//TODO this needs to be verify for exotic names
+						    			$appName = substr($filename, 0, strpos($filename,'.'));
+						   				
+						     			// We get the Info.plist of the app if it exists else <app_name>-Info.plist
+						     			$plistfile = getInfoPlistPath($appName);
+						      			//echo 'Plist file: ' . $plistfile . '<br />';
+						    			
+						    			//TODO create an application object and set basic data here
+						    			
+						    			
+						    			
+						    			
+						    			$entityManager = initDoctrine();
+						    			date_default_timezone_set('Europe/Paris');
+						    			
+						    			// Retrieve the developer connected (unique)
+						    			//TODO replace '1' by the user connected in session
+						    			$developer = $entityManager->getRepository('Entities\Developer')->findOneBy(array('id' => 1));
+						    			
+						    			//TODO: verify if the application does not already exist (Ask to create an new version if it exists)
+						    			
+						    			$application = new Application;
+						    			//$application->setDateCreation(new \DateTime("now"));
+						    			$application->setDeveloper($developer);
+						    			
+						    			if ( fillAppInfoWithPlist($plistfile, $application) ) {
+						    				
+						    				$entityManager->persist($application);
+						    				echo '<a href="application_list.php">Go back to Application list</a>';
+						    				
+						    			} else {
+						    				echo 'Error: Unable to read application plist file.<br />';
+						    			}
+						    			$entityManager->flush();
+										
+									} else {
+						   				echo 'Error: Unzip failed.<br />';
+						   			}
+						       	       
 								} else {
-					   				echo 'Unzip failed.<br />';
-					   			}
-					       	       
+									echo 'Error: There was an error during the file upload.  Please try again.<br />';
+								}
+								
 							} else {
-								echo 'There was an error during the file upload.  Please try again.<br />'; // It failed
+								echo $error;
 							}
 							
 						} else {

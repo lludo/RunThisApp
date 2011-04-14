@@ -65,7 +65,7 @@
 				    	} else {
 				    		echo '<ul>' . PHP_EOL;
 				    		foreach ($tester->getDevices() AS $device) {
-					        	echo '<li>Device: ' . $device->getName() . ', Model: ' . getReadableDeviceName($device->getModel()) . ', UDID: ' . $device->getUdid() . '</li>' . PHP_EOL;
+					        	echo '<li>->Device: ' . $device->getName() . ', Model: ' . getReadableDeviceName($device->getModel()) . ', UDID: ' . $device->getUdid() . '</li>' . PHP_EOL;
 					        }
 					        echo '</ul>' . PHP_EOL;
 				        }
