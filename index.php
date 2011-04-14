@@ -29,9 +29,11 @@
 				<h2>Run This App - First tests</h2>
 			</div>
 			<div>
-				<p>Click this link on your device to subscribe to the best test program of iOS applications (User 1): <br><a href="enroll.php?mail=test@test.com&app=1234&key=5678">enroll.php?user=test@test.com&app=1234&key=5678</a></p>
+				<p>Click this link to subscribe to the best test program of iOS applications (User 1): <br><a href="enroll.php?mail=test@test.com&app=1234&key=5678">http://www.runthisapp.com/enroll.php?user=test@test.com&app=1234&key=5678</a></p>
+				<img src="http://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=http://www.runthisapp.com/enroll.php%3Fmail=test@test.com%26app=1234%26key=5678" />
 				<h3 class="underline">&nbsp;</h3>
-				<p>Click this link on your device to subscribe to the best test program of iOS applications (User 2): <br><a href="enroll.php?mail=test2@test.com&app=1234&key=5678">enroll.php?user=test2@test.com&app=1234&key=5678</a></p>
+				<p>Click this link to subscribe to the best test program of iOS applications (User 2): <br><a href="enroll.php?mail=test2@test.com&app=1234&key=9012">http://www.runthisapp.com/enroll.php?user=test2@test.com&app=1234&key=9012</a></p>
+				<img src="http://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=http://www.runthisapp.com/enroll.php%3Fmail=test2@test.com%26app=1234%26key=9012" />
 			</div>
 		</div>
 		

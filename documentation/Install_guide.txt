@@ -1,10 +1,15 @@
 
 These folders needs to be writable: (chmod ugo+rwx __file__)
 
+for the database SQLite:
+
 - /core/
 - /core/database.sqlite
 - /core/Proxies/
 
+for app upload:
+
+- /app/
 
 
 
