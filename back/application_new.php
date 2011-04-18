@@ -123,7 +123,8 @@
 						echo 'Size: ' . ($_FILES['app_file']['size'] / 1024) . ' Kb<br />';
 						//echo 'Temp file: ' . $_FILES['app_file']['tmp_name'] . '<br />';
 					  
-						if ( $_FILES['app_file']['type'] == 'application/x-itunes-ipa' ) {
+						//echo 'Type: ' . $_FILES['app_file']['type'] . '<br />';
+						//if ( $_FILES['app_file']['type'] == 'application/x-itunes-ipa' ) {
 					  		$error = '';
 					  		
 					 		// Configuration options
@@ -204,9 +205,9 @@
 								echo $error;
 							}
 							
-						} else {
-							echo 'Error: This file is not an IPA file.<br />';
-						}
+						//} else {
+						//	echo 'Error: This file is not an IPA file.<br />';
+						//}
 					}
 				
 				} else {
