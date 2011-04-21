@@ -1,4 +1,4 @@
 .DS_Store
-/gma.esproj
+/*.esproj
+/nbproject
 /credentials.php
-

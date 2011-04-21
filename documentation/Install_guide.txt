@@ -1,4 +1,8 @@
 
+git submodule init
+git submodule update
+
+
 These folders needs to be writable: (chmod ugo+rwx __file__)
 
 for the database SQLite:
@@ -11,6 +15,13 @@ for app upload:
 
 - /app/
 
+
+Authentication: create a credentials.php file and add this:
+
+<?php
+	$CRED_USR = '__your_user__';
+	$CRED_PWD = '__your_passwd__';
+?>
 
 
 PHP 5 required

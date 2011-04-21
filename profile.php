@@ -41,7 +41,7 @@ if (empty($plistValue)) {
 }
 
 $plist = new CFPropertyList();
-$plist->parse( $plistValue, CFPropertyList::FORMAT_XML);
+$plist->parse( $plistValue, CFPropertyList::FORMAT_AUTO);
 
 //echo '<pre>';
 //var_dump( $plist->toArray() );
@@ -73,8 +73,5 @@ $device->setTester($tester);
 
 $entityManager->persist($device);
 $entityManager->flush();
-
-//
-
 
 ?>
