@@ -796,6 +796,106 @@ class AppleServices {
     }
     
     /**
+     * Edit certificate to add devices
+     * 
+     * This is the only function we needed without WebServices, we have to parse the site
+     * 
+     * @param string $provisioning_profile_id
+     * @return string $result
+     */
+    public static function editProvisioningProfile($user, $pwd, $provisioning_profile_id, $devices_id_id) {
+        
+        $login_url = 'https://daw.apple.com/cgi-bin/WebObjects/DSAuthWeb.woa/wa/login?' . 
+            'appIdKey=D635F5C417E087A3B9864DAC5D25920C4E9442C9339FA9277951628F0291F620&path=%2F%2Fdevcenter%2Fios%2Findex.action';
+        
+        $ch = curl_init();
+
+        // Set URL and other appropriate options
+        curl_setopt($ch, CURLOPT_URL, $login_url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'User-Agent: Mozilla/5.0  Firefox/4.0',
+            'Accept: */*',
+            'Accept-Language: en-us',
+            'Connection: keep-alive'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
+        
+        // Execute and close cURL
+        $data = curl_exec($ch);
+        curl_close($ch);
+        
+        preg_match('/^\t*<form method="post" name="appleConnectForm" action="(.+)$/mi', $data, $matches);
+        $login_post_url = substr($matches[1], 0, -2);
+        
+        echo $login_post_url;
+        
+        
+        
+        //$form_name = 'appleConnectForm';
+        //$form["theAccountName"] = $user;
+        //$form["theAccountPW"] = $pwd;
+        
+        $login_post_url = 'https://daw.apple.com' . $login_post_url;
+        $contents = 'theAccountName=' . $user . '&theAccountPW=' . $pwd;
+        
+        $ch = curl_init();
+
+        // Set URL and other appropriate options
+        curl_setopt($ch, CURLOPT_URL, $login_post_url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $contents);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'User-Agent: Mozilla/5.0  Firefox/4.0',
+            'Accept: */*',
+            'Accept-Language: en-us',
+            'Connection: keep-alive'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        
+        // Execute and close cURL
+        $data = curl_exec($ch);
+        curl_close($ch);
+        
+        preg_match('/^Set-Cookie: (.*?)$/mi', $data, $matches);
+        
+        print_r($data);
+        
+        /*
+        /cgi-bin/WebObjects/DSAuthWeb.woa/276/wo/IH4yZHPlgSb8fD3x7VQT4w/0.3.3.1.1.2.1.1.3.1.1HTTP/1.1 200 Apple
+        Date: Thu, 04 May 2011 22:07:32 GMT
+        Server: Apache
+        cache-control: private
+        cache-control: no-cache
+        cache-control: no-store
+        cache-control: must-revalidate
+        cache-control: max-age=0
+        expires: Thu, 04-May-2011 22:07:32 GMT
+        pragma: no-cache
+        set-cookie: ds01=A29179AB797F811DDC2D0F3C00A4DA168BECF9D416897B2135400E548000BD63; version="1"; expires=Fri, 04-May-2012 22:01:47 GMT; path=/; domain=.apple.com
+        set-cookie: DefaultAppleID=XXXXXXXX; version="1"; expires=Thu, 25-May-2011 22:07:32 GMT; path=/; domain=.apple.com
+        set-cookie: myacinfoName=8D5D3122C2BBFCDFA57EE6A9A91D9498A99073E0694A95112F92FC238E8837D8; version="1"; expires=Fri, 31-Dec-2010 20:00:00 GMT; path=/; domain=.apple.com
+        set-cookie: myacinfo=NTY77mW0UDYfyUIvXoJdYbAXAdCfbL5ZLRaMwg5jH7yAvUxa2/8tl8Kuf2GyM9RwEu//FuQGvTpuiP0@; version="1"; path=/; domain=.apple.com
+        connection: close
+        content-length: 290
+        Content-Type: text/html; charset=iso-8859-1
+        */
+        
+        $edit_url = 'http://developer.apple.com/ios/manage/provisioningprofiles/edit.action?provDisplayId=' . $provisioning_profile_id;
+        
+        
+        
+        // Work in progress...
+        
+        
+        
+        //TODO: xxx
+        return '<p>Function not implemented yet!</p>' . PHP_EOL;
+    }
+    
+    /**
      * Return the cookie to set from the raw curl content
      * 
      * @param string $data
