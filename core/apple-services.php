@@ -805,6 +805,8 @@ class AppleServices {
      */
     public static function editProvisioningProfile($user, $pwd, $provisioning_profile_id, $devices_id_id) {
         
+        //NOTE: Step 1 connection to Apple Website, step 2 parse form to modify profile
+        
         $login_url = 'https://daw.apple.com/cgi-bin/WebObjects/DSAuthWeb.woa/wa/login?' . 
             'appIdKey=D635F5C417E087A3B9864DAC5D25920C4E9442C9339FA9277951628F0291F620&path=%2F%2Fdevcenter%2Fios%2Findex.action';
         
@@ -884,6 +886,85 @@ class AppleServices {
         */
         
         $edit_url = 'http://developer.apple.com/ios/manage/provisioningprofiles/edit.action?provDisplayId=' . $provisioning_profile_id;
+        
+        
+        
+        
+        
+        
+
+
+
+
+        // Load dom the page
+        $dom = new DOMDocument();
+        //TEST: if ($dom->loadHTMLFile('./provisioningprofiles-edit.action_provDisplayId=xxx.html') ) {
+        if ($dom->loadHTMLFile($edit_url) ) {
+
+            $xpath = new DOMXPath($dom);
+            $selects = $xpath->query('//select');
+
+            // Parse all select and retrieve selected value
+            $keysValuesArray = NULL;
+            foreach ($selects as $select) {
+
+                    $select_dom = new DOMDocument('1.0', 'utf-8');
+                    $select_dom->loadHTML('<html></html>');
+                    $select_dom->documentElement->appendChild($select_dom->importNode($select, true));
+
+                    $xpath_select = new DOMXPath($select_dom);
+                    $option_selected = $xpath_select->query('//option[@selected="selected"]')->item(0);
+
+                    $key_value = $select->getAttribute('name') . '=' . $option_selected->getAttribute('value');
+                    $keysValuesArray[$key_value] = $key_value;
+            }
+
+            // Parse all input and retrieve values (and add the UDID we want for this profile)
+            $inputs = $xpath->query('//input');
+
+            foreach ($inputs as $input) {
+
+                if ( $input->getAttribute('type') == 'checkbox' ) {
+
+                    if ( ($input->getAttribute('checked') == 'checked') || ($input->getAttribute('value') == $udid_to_add) ) {
+                        $key_value = $input->getAttribute('name') . '=' . $input->getAttribute('value');
+                        $keysValuesArray[$key_value] = $key_value;
+                    }
+                }
+                else if ( ($input->getAttribute('type') != 'submit') && ($input->getAttribute('type') != 'image') ) {
+                    $key_value = $input->getAttribute('name') . '=' . $input->getAttribute('value');
+                    $keysValuesArray[$key_value] = $key_value;
+                }
+            }
+            $keysValuesArray[] = 'submit.x=0';
+            $keysValuesArray[] = 'submit.y=0';
+
+
+
+            //TODO: work in progress... (tmp: display url, data,...)
+            $xpath_form = new DOMXPath($dom);
+            $form = $xpath_form->query('//form')->item(0);
+
+            echo 'URL to call: ' . $form->getAttribute('action'). '<br/>' . PHP_EOL;
+            echo 'Method: ' . $form->getAttribute('method'). '<br/>' . PHP_EOL;
+            echo 'Data to send to add the device ' . $udid_to_add . ':<br/>' . PHP_EOL;
+            echo '<br/>' . PHP_EOL;
+
+            foreach ($keysValuesArray as $keyValue) {
+                echo str_replace(' ', '+', $keyValue) . '<br/>' . PHP_EOL;
+            }
+        }
+        else {
+
+            echo 'error parsing';
+        }
+        
+        
+        
+        
+        
+        
+        
         
         
         
