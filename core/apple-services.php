@@ -46,6 +46,18 @@ class AppleServices {
     private static $user_locale = 'en_US';
     
     /**
+     * User used for authentication
+     * @var string $user
+     */
+    private static $user = NULL;
+    
+    /**
+     * Password used for authentication
+     * @var string $pwd
+     */
+    private static $passwod = NULL;
+    
+    /**
      * Coookie used for authentication
      * @var string $cookie
      */
@@ -64,7 +76,10 @@ class AppleServices {
      * @return array $result
      */
     public static function connect($user, $pwd) {
-
+        
+        self::$user = $user;
+        self::$passwod = $pwd;
+        
         $url = 'https://daw2.apple.com/cgi-bin/WebObjects/DSAuthWeb.woa/wa/clientDAW?format=plist&appIdKey='. self::$app_id_key . 
                     '&appleId=' . urlencode($user) . '&password=' . urlencode($pwd) . 
                     '&userLocale=' . self::$user_locale . '&protocolVersion=' . self::$protocol_version_daw2;
@@ -798,14 +813,28 @@ class AppleServices {
     /**
      * Edit certificate to add devices
      * 
-     * This is the only function we needed without WebServices, we have to parse the site
+     * Add the device udid to the provisioning profile, return
+     * true if the device was added without error, else false.
      * 
      * @param string $provisioning_profile_id
+     * @param string $device_number
      * @return boolean $result
      */
-    public static function editProvisioningProfile($user, $pwd, $provisioning_profile_id, $devices_id_id) {
+    public static function editProvisioningProfile($provisioning_profile_id, $device_number) {
         
-        //NOTE: Step 1 connection to Apple Website, step 2 parse form to modify profile
+        /**
+         * NOTE: This is the only function we needed without having
+         * WebServices, so we have to parse the site.
+         * 
+         * Step 1 connection to Apple Website
+         *      1.1 get connetion urlfrom login page
+         *      1.2 execute first part of login to get temp cookies
+         *      1.3 execute last part to have a valid connetion cookie
+         * 
+         * Step 2 parse form (get inputs and selects data to modify profile)
+         * 
+         * Step 3 execute form action with data
+         */
         
         $login_url = 'https://daw.apple.com/cgi-bin/WebObjects/DSAuthWeb.woa/wa/login?' . 
             'appIdKey=D635F5C417E087A3B9864DAC5D25920C4E9442C9339FA9277951628F0291F620&' . 
@@ -825,8 +854,7 @@ class AppleServices {
         }
         
         $login_post_url = 'https://daw.apple.com' . $login_post_url;
-        $contents = 'theAccountName=' . $user . '&theAccountPW=' . $pwd;
-        
+        $contents = 'theAccountName=' . self::$user . '&theAccountPW=' . self::$passwod;
         
         $ch = curl_init();
 
@@ -879,6 +907,8 @@ class AppleServices {
                 $cookies[] = $matches[1];
             }
         }
+        
+        
         
         $edit_url = 'https://developer.apple.com/ios/manage/provisioningprofiles/edit.action?provDisplayId=' . $provisioning_profile_id;
         $ch = curl_init();
@@ -933,7 +963,7 @@ class AppleServices {
 
                 if ( $input->getAttribute('type') == 'checkbox' ) {
 
-                    if ( ($input->getAttribute('checked') == 'checked') || ($input->getAttribute('value') == $devices_id_id) ) {
+                    if ( ($input->getAttribute('checked') == 'checked') || ($input->getAttribute('value') == $device_number) ) {
                         $key_value = $input->getAttribute('name') . '=' . $input->getAttribute('value');
                         $keysValuesArray[$key_value] = $key_value;
                     }
@@ -985,6 +1015,7 @@ class AppleServices {
         // Execute and close cURL
         $data = curl_exec($ch);
         curl_close($ch);
+        
         
         
         $response = preg_split("/(\r?\n)/", $data);

@@ -74,7 +74,73 @@ if ( $device_found ) {
     echo '<p>Device id on server:' . $device_id . '</p>' . PHP_EOL;
 }
 
-//TODO: add the $device_id for the provisioning profile application from $_GET['app']
-//TODO: then regenerate this profile and download it
+$result = AppleServices::listProvisioningProfiles($team_id);
+if ( $result['resultCode'] != 0 ) {
+    die ($result['userString']);
+}
+
+$profile_id_found = NULL;
+foreach ($result['provisioningProfiles'] as $profile) {
+    if ($_GET['app'] == $profile['appId']['identifier']) {
+        $profile_id_found = $profile['provisioningProfileId'];
+        break;
+    }
+}
+
+if ( $profile_id_found != NULL ) {
+    echo '<p>Profile found for app: ' . $_GET['app'] . ' (' . $profile_id_found . ')</p>' . PHP_EOL;
+} else {
+    die ('Profile not found for the app requested!');
+}
+
+$result = AppleServices::editProvisioningProfile($profile_id_found, $_GET['udid']);
+if ( !$result ) {
+    die ('Cant add this device to the provisioning profile!');
+}
+
+echo '<p>Device added to profile.</p>' . PHP_EOL;
+
+// Get the new provisioning profile id (it changes after each modification)
+$new_profile_id = $profile_id_found;
+while ( strcmp($new_profile_id, $profile_id_found) == 0 ) {
+    
+    $result = AppleServices::listProvisioningProfiles($team_id);
+    if ( $result['resultCode'] != 0 ) {
+        die ($result['userString']);
+    }
+    
+    foreach ($result['provisioningProfiles'] as $profile) {
+        if ($_GET['app'] == $profile['appId']['identifier']) {
+            $new_profile_id = $profile['provisioningProfileId'];
+            break;
+        }
+    }
+    
+    //TODO: do something to avoid stackoverflow in case of long generation
+    echo '<p>Loop...</p>' . PHP_EOL;
+}
+
+echo '<p>New profile id: ' . $new_profile_id . '</p>' . PHP_EOL;
+
+$result = AppleServices::downloadProvisioningProfile($new_profile_id, $team_id);
+
+if ( $result['resultCode'] != 0 ) {
+    if ( $result['userString'] != NULL ) {
+        die ($result['userString']);
+    } else {
+        echo '<p>Error downloading the new profile.</p>' . PHP_EOL;
+        var_dump($result);
+    }
+}
+
+$new_profile = $result['provisioningProfile']['encodedProfile'];
+
+//TODO: save this with the app binary (tmp: save in app folder with bundle id)
+$newfile = __DIR__ . '/app/' . $_GET['app'] .'.mobileprovision';
+$file = fopen ($newfile, "w");
+fwrite($file, $new_profile);
+fclose ($file); 
+
+echo '<p>New profile saved.</p>' . PHP_EOL;
 
 ?>
