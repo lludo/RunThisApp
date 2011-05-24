@@ -801,45 +801,32 @@ class AppleServices {
      * This is the only function we needed without WebServices, we have to parse the site
      * 
      * @param string $provisioning_profile_id
-     * @return string $result
+     * @return boolean $result
      */
     public static function editProvisioningProfile($user, $pwd, $provisioning_profile_id, $devices_id_id) {
         
         //NOTE: Step 1 connection to Apple Website, step 2 parse form to modify profile
         
         $login_url = 'https://daw.apple.com/cgi-bin/WebObjects/DSAuthWeb.woa/wa/login?' . 
-            'appIdKey=D635F5C417E087A3B9864DAC5D25920C4E9442C9339FA9277951628F0291F620&path=%2F%2Fdevcenter%2Fios%2Findex.action';
+            'appIdKey=D635F5C417E087A3B9864DAC5D25920C4E9442C9339FA9277951628F0291F620&' . 
+            'path=%2F%2Fdevcenter%2Fios%2Findex.action';
         
-        $ch = curl_init();
-
-        // Set URL and other appropriate options
-        curl_setopt($ch, CURLOPT_URL, $login_url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'User-Agent: Mozilla/5.0  Firefox/4.0',
-            'Accept: */*',
-            'Accept-Language: en-us',
-            'Connection: keep-alive'));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
-        
-        // Execute and close cURL
-        $data = curl_exec($ch);
-        curl_close($ch);
-        
-        preg_match('/^\t*<form method="post" name="appleConnectForm" action="(.+)$/mi', $data, $matches);
-        $login_post_url = substr($matches[1], 0, -2);
-        
-        echo $login_post_url;
-        
-        
-        
-        //$form_name = 'appleConnectForm';
-        //$form["theAccountName"] = $user;
-        //$form["theAccountPW"] = $pwd;
+        $dom = new DOMDocument();
+        if ( $dom->loadHTMLFile($login_url) ) {
+            
+            $xpath = new DOMXPath($dom);
+            $form = $xpath->query('//form[@name="appleConnectForm"]')->item(0);
+            
+            $login_post_url = $form->getAttribute('action');
+        }
+        else {
+            echo 'error parsing 1';
+            return FALSE;
+        }
         
         $login_post_url = 'https://daw.apple.com' . $login_post_url;
         $contents = 'theAccountName=' . $user . '&theAccountPW=' . $pwd;
+        
         
         $ch = curl_init();
 
@@ -861,45 +848,65 @@ class AppleServices {
         $data = curl_exec($ch);
         curl_close($ch);
         
-        preg_match('/^Set-Cookie: (.*?)$/mi', $data, $matches);
-        
-        print_r($data);
-        
-        /*
-        /cgi-bin/WebObjects/DSAuthWeb.woa/276/wo/IH4yZHPlgSb8fD3x7VQT4w/0.3.3.1.1.2.1.1.3.1.1HTTP/1.1 200 Apple
-        Date: Thu, 04 May 2011 22:07:32 GMT
-        Server: Apache
-        cache-control: private
-        cache-control: no-cache
-        cache-control: no-store
-        cache-control: must-revalidate
-        cache-control: max-age=0
-        expires: Thu, 04-May-2011 22:07:32 GMT
-        pragma: no-cache
-        set-cookie: ds01=A29179AB797F811DDC2D0F3C00A4DA168BECF9D416897B2135400E548000BD63; version="1"; expires=Fri, 04-May-2012 22:01:47 GMT; path=/; domain=.apple.com
-        set-cookie: DefaultAppleID=XXXXXXXX; version="1"; expires=Thu, 25-May-2011 22:07:32 GMT; path=/; domain=.apple.com
-        set-cookie: myacinfoName=8D5D3122C2BBFCDFA57EE6A9A91D9498A99073E0694A95112F92FC238E8837D8; version="1"; expires=Fri, 31-Dec-2010 20:00:00 GMT; path=/; domain=.apple.com
-        set-cookie: myacinfo=NTY77mW0UDYfyUIvXoJdYbAXAdCfbL5ZLRaMwg5jH7yAvUxa2/8tl8Kuf2GyM9RwEu//FuQGvTpuiP0@; version="1"; path=/; domain=.apple.com
-        connection: close
-        content-length: 290
-        Content-Type: text/html; charset=iso-8859-1
-        */
-        
-        $edit_url = 'http://developer.apple.com/ios/manage/provisioningprofiles/edit.action?provDisplayId=' . $provisioning_profile_id;
-        
-        
-        
-        
-        
-        
+        foreach(preg_split("/(\r?\n)/", $data) as $line){
+            if ( preg_match('/^Set-Cookie: (.*?)$/mi', $line, $matches) ) {
+                $cookies[] = $matches[1];
+            }
+        }
 
+        
+        
+        $url = 'https://developer.apple.com/devcenter/ios/index.action';
+        $ch = curl_init();
+        
+        // Set URL and other appropriate options
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
+        foreach ($cookies as $cookie) {
+            $values = split(';', $cookie);
+            curl_setopt($ch, CURLOPT_COOKIE, $values[0]);
+        }
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        
+        // Execute and close cURL
+        $data = curl_exec($ch);
+        curl_close($ch);
+        
+        foreach(preg_split("/(\r?\n)/", $data) as $line){
+            if ( preg_match('/^Set-Cookie: (.*?)$/mi', $line, $matches) ) {
+                $cookies[] = $matches[1];
+            }
+        }
+        
+        $edit_url = 'https://developer.apple.com/ios/manage/provisioningprofiles/edit.action?provDisplayId=' . $provisioning_profile_id;
+        $ch = curl_init();
+        
+        // Set URL and other appropriate options
+        curl_setopt($ch, CURLOPT_URL, $edit_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
+        $totalCookie = "";
+        foreach ($cookies as $cookie) {
+            $values = split(';', $cookie);
+            $totalCookie .= $values[0] . "; ";
+        }
+        curl_setopt($ch, CURLOPT_COOKIE, $totalCookie);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        
+        // Execute and close cURL
+        $data = curl_exec($ch);
+        curl_close($ch);
 
-
-
+        
+        
+        //TODO: parse only inputs and select in the form named "save"
+        
         // Load dom the page
         $dom = new DOMDocument();
-        //TEST: if ($dom->loadHTMLFile('./provisioningprofiles-edit.action_provDisplayId=xxx.html') ) {
-        if ($dom->loadHTMLFile($edit_url) ) {
+        if ( $dom->loadHTML($data) ) {
 
             $xpath = new DOMXPath($dom);
             $selects = $xpath->query('//select');
@@ -926,7 +933,7 @@ class AppleServices {
 
                 if ( $input->getAttribute('type') == 'checkbox' ) {
 
-                    if ( ($input->getAttribute('checked') == 'checked') || ($input->getAttribute('value') == $udid_to_add) ) {
+                    if ( ($input->getAttribute('checked') == 'checked') || ($input->getAttribute('value') == $devices_id_id) ) {
                         $key_value = $input->getAttribute('name') . '=' . $input->getAttribute('value');
                         $keysValuesArray[$key_value] = $key_value;
                     }
@@ -943,37 +950,51 @@ class AppleServices {
 
             //TODO: work in progress... (tmp: display url, data,...)
             $xpath_form = new DOMXPath($dom);
-            $form = $xpath_form->query('//form')->item(0);
-
-            echo 'URL to call: ' . $form->getAttribute('action'). '<br/>' . PHP_EOL;
-            echo 'Method: ' . $form->getAttribute('method'). '<br/>' . PHP_EOL;
-            echo 'Data to send to add the device ' . $udid_to_add . ':<br/>' . PHP_EOL;
-            echo '<br/>' . PHP_EOL;
-
+            $form = $xpath_form->query('//form[@name="save"]')->item(0);
+            
+            $edit_post_url = 'https://developer.apple.com' . $form->getAttribute('action');
+            
+            $contents = "";
             foreach ($keysValuesArray as $keyValue) {
-                echo str_replace(' ', '+', $keyValue) . '<br/>' . PHP_EOL;
+                $contents .= '&' . str_replace(' ', '+', $keyValue);
             }
         }
         else {
 
-            echo 'error parsing';
+            echo 'error parsing 2';
+            return FALSE;
         }
         
+        $ch = curl_init();
+
+        // Set URL and other appropriate options
+        curl_setopt($ch, CURLOPT_URL, $edit_post_url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $contents);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
+        $totalCookie = "";
+        foreach ($cookies as $cookie) {
+            $values = split(';', $cookie);
+            $totalCookie .= $values[0] . "; ";
+        }
+        curl_setopt($ch, CURLOPT_COOKIE, $totalCookie);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        
+        // Execute and close cURL
+        $data = curl_exec($ch);
+        curl_close($ch);
         
         
+        $response = preg_split("/(\r?\n)/", $data);
         
-        
-        
-        
-        
-        
-        
-        // Work in progress...
-        
-        
-        
-        //TODO: xxx
-        return '<p>Function not implemented yet!</p>' . PHP_EOL;
+        if ( $response[0] == 'HTTP/1.1 100 Continue' ) {
+            return TRUE;
+        }
+        else {
+            return FALSE;
+        }
     }
     
     /**
