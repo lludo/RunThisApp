@@ -86,9 +86,6 @@ class Application {
         $this->testers[] = $tester;
     }
     
-    public function addVersion($version){
-        $this->versions[] = $version;
-    }
     
     public function setDeveloper($developer) {
     	if ($this->developer !== $developer) {
@@ -100,6 +97,14 @@ class Application {
     public function getDeveloper() {
         return $this->developer;
     }
+	
+	public function addVersion($version){
+        $this->versions[] = $version;
+    }
+    
+	public function getVersions() {
+		return $this->versions;
+	}
 }
 
 ?>
