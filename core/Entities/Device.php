@@ -7,7 +7,7 @@ namespace Entities;
  */
 class Device {
 	
-	/**
+    /**
      * @Id @Column(type="integer") @GeneratedValue(strategy="AUTO")
      */
     private $id;
@@ -38,12 +38,12 @@ class Device {
     private $udid;
     
     /**
-	 * @OneToOne(targetEntity="Invitation")
-	 * @JoinColumn(name="id_invitation", referencedColumnName="id")
-	 */
+    * @OneToOne(targetEntity="Invitation")
+    * @JoinColumn(name="id_invitation", referencedColumnName="id")
+    */
     private $invitation;
     
-	/**
+    /**
      * @ManyToOne(targetEntity="Tester", inversedBy="devices")
      */
     private $tester;
@@ -98,7 +98,7 @@ class Device {
     
     public function setInvitation($invitation) {
     	if ($this->invitation !== $invitation) {
-        	$invitation->addDevice($this);
+        	$invitation->setDevice($this);
         	$this->invitation = $invitation;
         }
     }

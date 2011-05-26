@@ -11,6 +11,10 @@ for the database SQLite:
 - /core/database.sqlite
 - /core/Proxies/
 
+generate the database with: doctrine orm:schema-tool --create
+The script is in the core folder
+(doctrine orm:validate-schema)
+
 for app upload:
 
 - /app/
@@ -21,6 +25,11 @@ Authentication: create a credentials.php file and add this:
 <?php
 	$CRED_USR = '__your_user__';
 	$CRED_PWD = '__your_passwd__';
+
+	$CRED_SMTP = 'smtp.gmail.com';			// example
+	$CRED_SMTP_PORT = 465;				// example
+	$CRED_SMTP_USR = '__your_email__';
+	$CRED_SMTP_PWD = '__your_passwd__';
 ?>
 
 
