@@ -11,7 +11,7 @@ if (!isset($_GET['udid'], $_GET['app'], $_GET['ver']))
 
 
 
-//step 2 check that user is allowed to dld this app and this version:
+//step 2 check that user is allowed to dl this app and this version:
 //TODO using $_GET["udid"]
 
 
@@ -47,7 +47,7 @@ $isAppSigned = isAppSignedForUdid($_GET['udid'], $_GET['app'], $_GET['ver']);
 <html>
 <head>
 
-<script src="js/jquery-1.5.2.min.js"></script>
+<script src="js/jquery-1.6.1.min.js"></script>
 
 <script>
 
