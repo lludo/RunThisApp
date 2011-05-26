@@ -6,8 +6,13 @@ namespace Entities;
  * @Entity @Table(name="invitation")
  */
 class Invitation {
-	
-	/**
+    
+    const STATUS_SENT = 'sent';
+    const STATUS_UDID = 'udid';
+    const STATUS_PROFILE = 'profile';
+    const STATUS_INSTALLED = 'installed';
+    
+    /**
      * @Id @Column(type="integer") @GeneratedValue(strategy="AUTO")
      */
     private $id;
@@ -43,15 +48,55 @@ class Invitation {
     private $developer;
     
     /**
-	 * @OneToOne(targetEntity="Device")
-	 * @JoinColumn(name="id_device", referencedColumnName="id")
-	 */
+     * @OneToOne(targetEntity="Device") 
+     * @JoinColumn(name="id_device", referencedColumnName="id")
+     */
     private $device;
     
-	/**
+    /**
      * @ManyToOne(targetEntity="Tester", inversedBy="invitations")
      */
     private $tester;
+    
+    public function setSubject($subject) {
+        $this->subject = $subject;
+    }
+    
+    public function getSubject() {
+        return $this->subject;
+    }
+    
+    public function setText($text) {
+        $this->text = $text;
+    }
+    
+    public function getText() {
+        return $this->text;
+    }
+    
+    public function setToken($token) {
+        $this->token = $token;
+    }
+    
+    public function getToken() {
+        return $this->token;
+    }
+    
+    public function setDateSent($dateSent) {
+        $this->dateSent = $dateSent;
+    }
+    
+    public function getDateSent() {
+        return $this->dateSent;
+    }
+    
+    public function setStatus($status) {
+        $this->status = $status;
+    }
+    
+    public function getStatus() {
+        return $this->status;
+    }
     
     public function setDeveloper($developer) {
     	if ($this->developer !== $developer) {
