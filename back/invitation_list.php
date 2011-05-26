@@ -52,7 +52,7 @@
 				
 				echo '<ul>';
 				foreach ($invitations AS $invitation) {
-				    echo '<li>Invitation: ' . $invitation->getTester()->getEmail() . '</li>' . PHP_EOL;
+				    echo '<li>Invitation: ' . $invitation->getTester()->getEmail() . ' - ' . $invitation->getDateSent()->format('d/m/Y H:i:s') . ' - ' . $invitation->getStatus() . '</li>' . PHP_EOL;
 				}
 				echo '</ul>' . PHP_EOL;
 				
