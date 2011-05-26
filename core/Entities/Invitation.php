@@ -58,6 +58,11 @@ class Invitation {
      */
     private $tester;
     
+    /**
+     * @ManyToOne(targetEntity="Version", inversedBy="invitations")
+     */
+    private $version;
+    
     public function setSubject($subject) {
         $this->subject = $subject;
     }
@@ -111,7 +116,7 @@ class Invitation {
     
     public function setDevice($device) {
     	if ($this->device !== $device) {
-        	$device->addInvitation($this);
+        	$device->setInvitation($this);
         	$this->device = $device;
         }
     }
@@ -129,6 +134,17 @@ class Invitation {
     
     public function getTester() {
         return $this->tester;
+    }
+    
+    public function setVersion($version) {
+    	if ($this->version !== $version) {
+        	$version->addInvitation($this);
+        	$this->version = $version;
+        }
+    }
+    
+    public function getVersion() {
+        return $this->version;
     }
 }
 

@@ -42,9 +42,7 @@ foreach ($_POST['selected_devices'] as $deviceId) {
     $key = Tools::randomAppleRequestId();
     
     $body .= "Click on following link to get started: " ;
-    
-    //$url = "http://runthisapp.com/enroll.php?mail=X&app=X&key=X";
-    $url = 'http://192.168.1.103/rta/enroll.php?mail=' . $email . '&app=' . $appBundleId . 'key=' . $key;
+    $url = 'http://runthisapp.com/enroll.php?mail=' . $email . '&app=' . $appBundleId . '&key=' . $key;
     
     $subject = 'RunThisApp invitation to test '. $application->getName() .' v'.$version->getVersion();
     $bodyHtml = $body . '<a href="' . $url . '">' . $url . '</a>';
@@ -89,13 +87,12 @@ foreach ($_POST['selected_devices'] as $deviceId) {
     else {
         $sendMailError += 'The invitation was not sent to: ' . $email . '</br>';
     }
-    
-    $entityManager->flush();
 }
 
+$entityManager->flush();
 
-
-?><!doctype html>
+?>
+<!doctype html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">

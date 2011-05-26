@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Application {
 	
-	/**
+    /**
      * @Id @Column(type="integer") @GeneratedValue(strategy="AUTO")
      */
     private $id;
@@ -35,12 +35,12 @@ class Application {
     private $text;
     
     /**
-	 * @ManyToMany(targetEntity="Tester", inversedBy="applications")
-	 * @JoinTable(name="application_tester",
-	 *      joinColumns={@JoinColumn(name="application_id", referencedColumnName="id")},
-	 *      inverseJoinColumns={@JoinColumn(name="tester_id", referencedColumnName="id")}
-	 *      )
-	 */
+     * @ManyToMany(targetEntity="Tester", inversedBy="applications")
+     * @JoinTable(name="application_tester",
+     *      joinColumns={@JoinColumn(name="application_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="tester_id", referencedColumnName="id")}
+     *      )
+     */
     private $testers = null;
     
     /**
@@ -102,9 +102,9 @@ class Application {
         $this->versions[] = $version;
     }
     
-	public function getVersions() {
-		return $this->versions;
-	}
+    public function getVersions() {
+	return $this->versions;
+    }
 }
 
 ?>

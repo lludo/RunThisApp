@@ -32,11 +32,32 @@ class Version {
      */
     private $application;
     
+    /**
+     * @OneToMany(targetEntity="Invitation", mappedBy="version")
+     */
+    private $invitations = null;
+    
+    public function __construct() {
+        $this->invitations = new ArrayCollection();
+    }
+    
     public function setApplication($application) {
     	if ($this->application !== $application) {
         	$application->addVersion($this);
         	$this->application = $application;
         }
+    }
+    
+    public function getApplication() {
+        return $this->application;
+    }
+    
+    public function addInvitation($invitation) {
+        $this->invitations[] = $invitation;
+    }
+    
+    public function getInvitations() {
+       return $this->invitations;
     }
     
     public function getVersion() {
@@ -54,11 +75,6 @@ class Version {
     public function setId($id) {
         $this->id = $id;
     }
-	
-    public function getApplication() {
-        return $this->application;
-    }
-	
 }
 
 ?>
