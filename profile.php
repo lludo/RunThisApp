@@ -1,8 +1,12 @@
 <?php
 
 use Entities\Device;
+use Entities\Tester;
+use Entities\Invitation;
 
 require_once __DIR__ . '/lib/cfpropertylist/CFPropertyList.php';
+require_once __DIR__ . '/lib/Swift/lib/swift_required.php';
+require_once __DIR__ . '/credentials.php';
 require_once __DIR__ . '/lib/log.php';
 require_once __DIR__ . '/core/index.php';
 require_once __DIR__ . '/asn.php';
@@ -58,20 +62,76 @@ date_default_timezone_set('Europe/Paris');
 
 // Retrieve the tester with his mail (unique)
 $tester = $entityManager->getRepository('Entities\Tester')->findOneBy(array('email' => $_GET['mail']));
+if ( $tester == NULL ) {
+    die('This user does not exist!');
+}
 
+//TODO: add application check to retrieve invitation
 //TODO: use $_GET['app'] and $_GET['key'] to verify response integrity
-//TODO: verify if the device does not already exist (Update data for the same udid if it exists)
+$invitation = $entityManager->getRepository('Entities\Invitation')->findOneBy(array('token' => $_GET['key']));
+if ( $invitation == NULL ) {
+    die('There is no valid invitation for this user!');
+}
 
-$device = new Device;
+//Verify if the device does not already exist (Update data for this device if it exists)
+$device = $entityManager->getRepository('Entities\Device')->findOneBy(array('udid' => $plistData['UDID']));
+
+if ( $device == NULL ) {
+    $device = new Device;
+}
+
 $device->setName($plistData['DEVICE_NAME']);
 $device->setDateCreation(new \DateTime("now"));
 $device->setSystemVersion($plistData['VERSION']);
 $device->setModel($plistData['PRODUCT']);
 $device->setUdid($plistData['UDID']);
-//$device->setInvitation($invitation);
+$device->setInvitation($invitation);
 $device->setTester($tester);
 
+$invitation->setStatus(Invitation::STATUS_UDID);
+
 $entityManager->persist($device);
+$entityManager->persist($invitation);
 $entityManager->flush();
+
+
+//Send the confirmation email
+
+$smtp = Swift_SmtpTransport::newInstance($CRED_SMTP, $CRED_SMTP_PORT, 'ssl')
+->setUsername($CRED_SMTP_USR)
+->setPassword($CRED_SMTP_PWD);
+
+$mailer = Swift_Mailer::newInstance($smtp);
+$body = 'Click on following link to install your app: ';
+
+//TODO: retrieve the app and version
+
+//TODO: use the function service_address() like in enroll.php to have a valid address everytime
+
+$url = 'http://192.168.1.103/rta/runthisapp.php?udid=' . $device->getUdid() . '&app=' . '1234' . '&ver=' . '5678';
+
+$subject = '[2/2] RunThisApp invitation to test finish';
+$bodyHtml = $body . '<a href="' . $url . '">' . $url . '</a>';
+$bodyText = $body . $url;
+
+//Create the message
+$message = Swift_Message::newInstance()
+//Give the message a subject
+->setSubject($subject)
+ //Set the From address with an associative array
+->setFrom(array($CRED_SMTP_USR => 'RunThisApp'))
+//Set the To addresses with an associative array
+->setTo(array($_GET['mail']))
+//Give it a body
+->setBody($bodyHtml, 'text/html')
+//And optionally an alternative body
+->addPart($bodyText, 'text/plain');
+
+$result = $mailer->send($message);
+
+// Error
+if ( $result != 1 ) {
+    die('Error sending email');
+}
 
 ?>

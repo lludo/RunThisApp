@@ -26,7 +26,6 @@ function service_address() {
 	return $server . dirname($_SERVER['REQUEST_URI']);
 }
 
-
 function profile_service_payload($challenge) {
     $payload = general_payload();
 
@@ -40,7 +39,7 @@ function profile_service_payload($challenge) {
 	$mail = $_GET['mail'];
 	$app = $_GET['app'];
     $key = $_GET['key'];
-    $payload_content['URL'] = 'http://' . service_address() . 'profile.php?mail='.$mail.'&app='.$app.'&key='.$key;
+    $payload_content['URL'] = 'http://' . service_address() . '/profile.php?mail='.$mail.'&app='.$app.'&key='.$key;
     $payload_content['DeviceAttributes'] = array(
         'UDID', 
         'VERSION',
@@ -65,14 +64,9 @@ function profile_service_payload($challenge) {
 	return $plist->toXML(true);
 }
 
-/*
-echo 'user=' . $_GET['user'];
-echo '<br/>';
-echo 'app=' . $_GET['app'];
-*/
-
 header('Content-Type: application/x-apple-aspen-config');
 
 $payload =  profile_service_payload('signed-auth-token');
 echo $payload;
+
 ?>
