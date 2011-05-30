@@ -11,9 +11,9 @@ for the database SQLite:
 - /core/database.sqlite
 - /core/Proxies/
 
-generate the database with: doctrine orm:schema-tool --create
+generate the database with: ./doctrine orm:schema-tool:create
 The script is in the core folder
-(doctrine orm:validate-schema)
+(./doctrine orm:validate-schema)
 
 for app upload:
 
@@ -34,3 +34,7 @@ Authentication: create a credentials.php file and add this:
 
 
 PHP 5 required
+
+in php.ini
+
+change the "upload_max_filesize" if required

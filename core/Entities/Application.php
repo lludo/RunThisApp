@@ -15,7 +15,7 @@ class Application {
     private $id;
     
     /**
-     * @Column(type="string", length=50)
+     * @Column(type="string", length=50, nullable=true)
      */
     private $name;
     
@@ -25,7 +25,7 @@ class Application {
     private $iconFile;
     
     /**
-     * @Column(type="string", name="bundle_id", length=50)
+     * @Column(type="string", name="bundle_id", length=50, nullable=true)
      */
     private $bundleId;
     
@@ -33,6 +33,11 @@ class Application {
      * @Column(type="string", unique=true, length=250, nullable=true)
      */
     private $text;
+    
+    /**
+     * @Column(type="string", name="token", length=50, nullable=true)
+     */
+    private $token;
     
     /**
      * @ManyToMany(targetEntity="Tester", inversedBy="applications")
@@ -48,7 +53,7 @@ class Application {
      */
     private $versions = null;
 	
-	/**
+    /**
      * @ManyToOne(targetEntity="Developer", inversedBy="applications")
      */
     private $developer;
@@ -72,6 +77,14 @@ class Application {
     
     public function setIconFile($iconFile) {
     	$this->iconFile = $iconFile;
+    }
+    
+    public function getToken() {
+    	return $this->token;
+    }
+    
+    public function setToken($token) {
+    	$this->token = $token;
     }
     
     public function getBundleId() {
@@ -98,7 +111,7 @@ class Application {
         return $this->developer;
     }
 	
-	public function addVersion($version){
+    public function addVersion($version){
         $this->versions[] = $version;
     }
     

@@ -20,7 +20,7 @@ class Tester {
     private $email;
     
     /**
-     * @Column(type="string", length=50)
+     * @Column(type="string", length=50, nullable=true)
      */
     private $name;
     
