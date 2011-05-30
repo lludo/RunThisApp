@@ -2,6 +2,8 @@
 
 namespace Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * @Entity @Table(name="version")
  */
@@ -74,6 +76,14 @@ class Version {
 	
     public function setId($id) {
         $this->id = $id;
+    }
+    
+    public function setDateUpload($dateUpload) {
+    	$this->dateUpload = $dateUpload;
+    }
+    
+    public function getDateUpload() {
+    	return $this->dateUpload;
     }
 }
 

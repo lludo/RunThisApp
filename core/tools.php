@@ -36,6 +36,46 @@ class Tools {
     static function randomHashWithSize($length) {
         return substr(md5(rand()), 0, $length); 
     }
+    
+    /**
+     * Return the configurtion PLIST file for the application
+     * identified by the token passed in parameter
+     * @param string $token
+     * @return string path
+     */
+    static function getInfoPlistPath($token) {
+            
+        $dir = __DIR__ . '/../app/' . $token . '/app_bundle/Payload/';
+        
+        $app_folder = NULL;
+        if (is_dir($dir)) {
+            if ( ($dh = opendir($dir)) ) {
+                while (($file = readdir($dh)) !== false) {
+                    if ( filetype($dir . $file) == 'dir' && $file != '.' && $file != '..' ) {
+                        $app_folder = $file;
+                        break;
+                    }
+                }
+                closedir($dh);
+            }
+        }
+        
+        $plistPath = NULL;
+        if ($app_folder != NULL) {
+            
+            $plistPath = $dir . $app_folder . '/';
+            
+            // We get the Info.plist of the app if it exists else <app_name>-Info.plist
+            if ( file_exists($plistPath . 'Info.plist') ) {
+                $plistFilePath = $plistPath . 'Info.plist';
+            } else {
+                $plistFilePath = $plistPath . $app_folder . '-Info.plist';
+            }
+            
+        }
+        
+        return $plistFilePath;
+    }
 }
 
 ?>

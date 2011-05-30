@@ -13,33 +13,33 @@ class Device {
     private $id;
     
     /**
-     * @Column(type="string", length=50)
+     * @Column(type="string", length=50, nullable=true)
      */
     private $name;
     
     /**
-     * @Column(type="datetime", name="date_creation")
+     * @Column(type="datetime", name="date_creation", nullable=true)
      */
     private $dateCreation;
     
     /**
-     * @Column(type="string", name="system_version", length=50)
+     * @Column(type="string", name="system_version", length=50, nullable=true)
      */
     private $systemVersion;
     
     /**
-     * @Column(type="string", length=50)
+     * @Column(type="string", length=50, nullable=true)
      */
     private $model;
     
     /**
-     * @Column(type="string", length=50, unique=true)
+     * @Column(type="string", length=50, nullable=true)
      */
     private $udid;
     
     /**
     * @OneToOne(targetEntity="Invitation")
-    * @JoinColumn(name="id_invitation", referencedColumnName="id")
+    * @JoinColumn(name="id_invitation", referencedColumnName="id", nullable=true)
     */
     private $invitation;
     

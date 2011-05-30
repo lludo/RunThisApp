@@ -22,6 +22,17 @@ date_default_timezone_set('Europe/Paris');
 $nbInvitations = 0;
 $sendMailError = "";
 
+
+if ( $_POST['selected_device_new'] ) {
+    
+    if ( $_POST['selected_tester'] == 'new_tester' ) {
+        //create new tester : new_tester_email
+        //create new empty device : new_tester_email(mail)
+    } else {
+        //create new empty device : value(mail)
+    }
+}
+
 $versionId = $_POST['selected_version'];
 $version = $entityManager->getRepository('Entities\Version')->find($versionId);
 $application = $version->getApplication();
@@ -42,9 +53,12 @@ foreach ($_POST['selected_devices'] as $deviceId) {
     $key = Tools::randomAppleRequestId();
     
     $body .= "Click on following link to get started: " ;
-    $url = 'http://runthisapp.com/enroll.php?mail=' . $email . '&app=' . $appBundleId . '&key=' . $key;
     
-    $subject = 'RunThisApp invitation to test '. $application->getName() .' v'.$version->getVersion();
+    //TODO: use the function service_address() like in enroll.php to have a valid address everytime
+    //$url = "http://runthisapp.com/enroll.php?mail=X&app=X&key=X";
+    $url = 'http://192.168.1.103/rta/enroll.php?mail=' . $email . '&app=' . $appBundleId . '&key=' . $key;
+    
+    $subject = '[1/2] RunThisApp invitation to test '. $application->getName() .' v'.$version->getVersion();
     $bodyHtml = $body . '<a href="' . $url . '">' . $url . '</a>';
     $bodyText = $body . $url;
     
