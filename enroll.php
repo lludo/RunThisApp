@@ -17,14 +17,6 @@ function general_payload() {
 	return $payload;
 }
 
-function service_address() {
-	
-	$server = $_SERVER['SERVER_NAME'];
-	if ($_SERVER['SERVER_PORT'] != '80') {
-		$server .= ':'.$_SERVER['SERVER_PORT'];
-	}
-	return $server . dirname($_SERVER['REQUEST_URI']);
-}
 
 function profile_service_payload($challenge) {
     $payload = general_payload();
