@@ -108,7 +108,7 @@ $body = 'Click on following link to install your app: ';
 
 //TODO: use the function service_address() like in enroll.php to have a valid address everytime
 
-$url = 'http://192.168.1.103/rta/runthisapp.php?udid=' . $device->getUdid() . '&app=' . '1234' . '&ver=' . '5678';
+$url = 'http://192.168.1.103/rta/runthisapp.php?udid=' . $device->getUdid() . '&app=' . $_GET['app'] . '&ver=' . '123';
 
 $subject = '[2/2] RunThisApp invitation to test finish';
 $bodyHtml = $body . '<a href="' . $url . '">' . $url . '</a>';

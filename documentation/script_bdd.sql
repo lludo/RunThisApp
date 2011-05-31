@@ -1,0 +1,16 @@
+INSERT INTO application VALUES(1,1,'Enigmo','Icon.png','com.pangea.Enigmo',NULL,NULL);
+INSERT INTO application VALUES(2,1,'AppSales','Icon.png','com.mirageteam.appsales',NULL,NULL);
+INSERT INTO application_tester VALUES(2,1);
+INSERT INTO developer VALUES(1,'Ludovic','Landry',NULL,NULL);
+INSERT INTO device VALUES(1,1,1,'iPhone de Ludo','2011-05-27 00:00:42','8H7','iPhone3,1','d2f22d586c333041d191c81e5bb80948732d6a68');
+INSERT INTO device VALUES(2,NULL,2,'Jacks iPhone','2011-04-06 16:38:03','8G4','iPhone3,1','abe82ee897f90cadeb8b6d8c57a88f2effaa5000');
+INSERT INTO device VALUES(3,NULL,1,'iPhone 3Gs','2011-04-06 18:52:15','8G4','iPhone2,1','f66de87b8ea2bb3a4a2a8501b2cd5047b9efbae9');
+INSERT INTO device VALUES(4,NULL,1,'iPhone edge','2011-04-06 18:58:14','7E18','iPhone2,1','45a10213d21875d6e856afdb3d36f8062e866854');
+INSERT INTO device VALUES(5,NULL,1,'iPad de Ludo','2011-04-06 19:21:49','8G4','iPad1,1','e3187dbc4c740abf76efdb0440270d3805b26c14');
+INSERT INTO invitation VALUES(1,1,1,1,1,'RunThisApp invitation to test Enigmo v1.1.1','Mail with valid addreClick on following link to get started: Click on following link to get started: <a href="http://192.168.1.103/rta/enroll.php?mail=pascal@gmail.com&app=com.pangea.Enigmo&key=7ADEA0EB-527B-4792-C469-E2557355FD99">http://192.168.1.103/rta/enroll.php?mail=pascal@gmail.com&app=com.pangea.Enigmo&key=7ADEA0EB-527B-4792-C469-E2557355FD99</a>','DC6F09F2-AE2F-16A0-E36F-D98EE4ED1FE4','2011-05-26 18:11:07','udid');
+INSERT INTO invitation VALUES(2,1,3,2,2,'Test program participation','enroll.php?user=test@test.com&app=1234&key=5678','259b34c1a83f5','2011-04-06 10:30:00','installed');
+INSERT INTO tester VALUES(1,1,'ludo@gmail.com','Ludovic Landry','');
+INSERT INTO tester VALUES(2,1,'pascal@gmail.com','Pascal Cans','');
+INSERT INTO version VALUES(1,1,'1.1.0',NULL,'23-04-11 12:34:56');
+INSERT INTO version VALUES(2,1,'1.1.1',NULL,'23-04-11 10:04:32');
+INSERT INTO version VALUES(3,2,'1.0',NULL,'02-05-11 03:04:32');
