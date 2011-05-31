@@ -11,8 +11,9 @@ use Entities\Application,
 
 require_once __DIR__ . '/../credentials.php';
 require_once __DIR__ . '/../core/index.php';
-require_once __DIR__ . '/../core/tools.php';
+require_once __DIR__ . '/../mail.php';
 require_once __DIR__ . '/../core/functions.php';
+require_once __DIR__ . '/../tools.php';
 require_once __DIR__ . '/../lib/Swift/lib/swift_required.php';
 
 $entityManager = initDoctrine();
@@ -36,46 +37,28 @@ if ( $_POST['selected_device_new'] ) {
 $versionId = $_POST['selected_version'];
 $version = $entityManager->getRepository('Entities\Version')->find($versionId);
 $application = $version->getApplication();
+$msg = $_POST['body'];
 
 $smtp = Swift_SmtpTransport::newInstance($CRED_SMTP, $CRED_SMTP_PORT, 'ssl')
 ->setUsername($CRED_SMTP_USR)
 ->setPassword($CRED_SMTP_PWD);
-
 $mailer = Swift_Mailer::newInstance($smtp);
-$body = $_POST['body'];
 
+$appBundleId = $application->getBundleId();
+$app = $application->getName();
+$ver = $version->getVersion();
+$url = Tools::rel2abs('../runthisapp.php', Tools::current_url());
 foreach ($_POST['selected_devices'] as $deviceId) {
-    
-    $device = $entityManager->getRepository('Entities\Device')->find($deviceId);
-    
-    $email = $device->getTester()->getEmail();
-    $appBundleId = $application->getBundleId();
-    $key = Tools::randomAppleRequestId();
-    
-    $body .= "Click on following link to get started: " ;
-    
-    //TODO: use the function service_address() like in enroll.php to have a valid address everytime
-    //$url = "http://runthisapp.com/enroll.php?mail=X&app=X&key=X";
-    $url = 'http://192.168.1.103/rta/enroll.php?mail=' . $email . '&app=' . $appBundleId . '&key=' . $key;
-    
-    $subject = '[1/2] RunThisApp invitation to test '. $application->getName() .' v'.$version->getVersion();
-    $bodyHtml = $body . '<a href="' . $url . '">' . $url . '</a>';
-    $bodyText = $body . $url;
-    
-    //Create the message
-    $message = Swift_Message::newInstance()
-    //Give the message a subject
-    ->setSubject($subject)
-    //Set the From address with an associative array
-    ->setFrom(array($CRED_SMTP_USR => 'RunThisApp'))
-    //Set the To addresses with an associative array
-    ->setTo(array($email))
-    //Give it a body
-    ->setBody($bodyHtml, 'text/html')
-    //And optionally an alternative body
-    ->addPart($bodyText, 'text/plain');
-    
-    $result = $mailer->send($message);
+	$device = $entityManager->getRepository('Entities\Device')->find($deviceId);
+	$udid = $device->getUdid();
+    $mail = $device->getTester()->getEmail();
+    $token = Tools::randomAppleRequestId();
+	
+	if (empty($udid)) {
+		$result = send_enroll_mail($mailer, $url, $app, $ver, $msg, $mail, $token);
+	} else {
+		$result = send_link_mail($mailer, $url, $app, $ver, $msg, $mail, $udid, $token);
+	}
     
     // Ok
     if ( $result == 1 ) {
@@ -86,13 +69,14 @@ foreach ($_POST['selected_devices'] as $deviceId) {
         //TODO: if tester does not exist, create it.
         
         $invitation = new Invitation();
-        $invitation->setSubject($subject);
-        $invitation->setText($bodyHtml);
-        $invitation->setToken($key);
+        $invitation->setSubject("//TODO delete me");
+        $invitation->setText($msg);
+        $invitation->setToken($token);
         $invitation->setDateSent(new \DateTime("now"));
         $invitation->setStatus(Invitation::STATUS_SENT);
         //$invitation->setDeveloper(//TODO:)
         $invitation->SetTester($tester);
+        $invitation->SetVersion($version);
         $entityManager->persist($invitation);
         
         //TODO: add application to invitation object in model !!!
