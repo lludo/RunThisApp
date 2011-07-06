@@ -23,17 +23,6 @@ date_default_timezone_set('Europe/Paris');
 $nbInvitations = 0;
 $sendMailError = "";
 
-
-if ( $_POST['selected_device_new'] ) {
-    
-    if ( $_POST['selected_tester'] == 'new_tester' ) {
-        //create new tester : new_tester_email
-        //create new empty device : new_tester_email(mail)
-    } else {
-        //create new empty device : value(mail)
-    }
-}
-
 $versionId = $_POST['selected_version'];
 $version = $entityManager->getRepository('Entities\Version')->find($versionId);
 $application = $version->getApplication();
@@ -48,43 +37,69 @@ $appBundleId = $application->getBundleId();
 $app = $application->getName();
 $ver = $version->getVersion();
 $url = Tools::rel2abs('../runthisapp.php', Tools::current_url());
-foreach ($_POST['selected_devices'] as $deviceId) {
-	$device = $entityManager->getRepository('Entities\Device')->find($deviceId);
+
+function sendInvitationForDevice($device, $mailer, $url, $app, $ver, $msg, $entityManager) {
+	
 	$udid = $device->getUdid();
-    $mail = $device->getTester()->getEmail();
-    $token = Tools::randomAppleRequestId();
+	$mail = $device->getTester()->getEmail();
+	$token = Tools::randomAppleRequestId();
 	
 	if (empty($udid)) {
 		$result = send_enroll_mail($mailer, $url, $app, $ver, $msg, $mail, $token);
 	} else {
 		$result = send_link_mail($mailer, $url, $app, $ver, $msg, $mail, $udid, $token);
 	}
+	
+	// Ok
+	if ( $result == 1 ) {
+	    $nbInvitations++;
+	    
+	    $tester = $entityManager->getRepository('Entities\Tester')->findOneBy(array('email' => $email));
+	    
+	    //TODO: if tester does not exist, create it.
+	    
+	    $invitation = new Invitation();
+	    $invitation->setSubject("//TODO delete me");
+	    $invitation->setText($msg);
+	    $invitation->setToken($token);
+	    $invitation->setDateSent(new \DateTime("now"));
+	    $invitation->setStatus(Invitation::STATUS_SENT);
+	    //$invitation->setDeveloper(//TODO:)
+	    $invitation->SetTester($tester);
+	    $invitation->SetVersion($version);
+	    $entityManager->persist($invitation);
+	    
+	    //TODO: add application to invitation object in model !!!
+	}
+	// Error
+	else {
+	    $sendMailError += 'The invitation was not sent to: ' . $email . '</br>';
+	}
+}
+
+if ( $_POST['selected_device_new'] ) {
     
-    // Ok
-    if ( $result == 1 ) {
-        $nbInvitations++;
+    if ( $_POST['selected_tester'] == 'new_tester' ) {
+        //create new tester : new_tester_email
+        //create new empty device : new_tester_email(mail)
+    } else {
+        //create new empty device : value(mail)
         
-        $tester = $entityManager->getRepository('Entities\Tester')->findOneBy(array('email' => $email));
+        $tester = $entityManager->getRepository('Entities\Tester')->findOneBy(array('email' => $_POST['selected_tester']));
         
-        //TODO: if tester does not exist, create it.
+        $device = new Device();
+        $device->setTester($tester);
+        $entityManager->persist($device);
         
-        $invitation = new Invitation();
-        $invitation->setSubject("//TODO delete me");
-        $invitation->setText($msg);
-        $invitation->setToken($token);
-        $invitation->setDateSent(new \DateTime("now"));
-        $invitation->setStatus(Invitation::STATUS_SENT);
-        //$invitation->setDeveloper(//TODO:)
-        $invitation->SetTester($tester);
-        $invitation->SetVersion($version);
-        $entityManager->persist($invitation);
-        
-        //TODO: add application to invitation object in model !!!
+        sendInvitationForDevice($device, $mailer, $url, $app, $ver, $msg, $entityManager);
     }
-    // Error
-    else {
-        $sendMailError += 'The invitation was not sent to: ' . $email . '</br>';
-    }
+}
+
+if (isset($_POST['selected_devices'])) {
+	foreach ($_POST['selected_devices'] as $deviceId) {
+		$device = $entityManager->getRepository('Entities\Device')->find($deviceId);
+		sendInvitationForDevice($device, $mailer, $url, $app, $ver, $msg, $entityManager);
+	}
 }
 
 $entityManager->flush();

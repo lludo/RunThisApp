@@ -57,7 +57,7 @@ class Tools {
      */
     static function getInfoPlistPath($token) {
             
-        $dir = __DIR__ . '/../app/' . $token . '/app_bundle/Payload/';
+        $dir = __DIR__ . '/app/' . $token . '/app_bundle/Payload/';
         
         $app_folder = NULL;
         if (is_dir($dir)) {

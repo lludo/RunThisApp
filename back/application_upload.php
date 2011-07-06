@@ -4,7 +4,7 @@
     use Entities\Version;
     
     require_once __DIR__ . '/../lib/cfpropertylist/CFPropertyList.php';
-    require_once __DIR__ . '/../core/tools.php';
+    require_once __DIR__ . '/../tools.php';
     require_once __DIR__ . '/../core/index.php';
 
     function unzipApplication($upload_path, $filename) {

@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../lib/cfpropertylist/CFPropertyList.php';
 require_once __DIR__ . '/../credentials.php';
-require_once __DIR__ . '/tools.php';
+require_once __DIR__ . '/../tools.php';
 
 /**
  * AppleServices provides mothodes to access developer rovisioning portal
