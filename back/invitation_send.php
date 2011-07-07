@@ -1,7 +1,5 @@
 <?php
 
-date_default_timezone_set('Europe/Berlin');
-
 use Entities\Application, 
 	Entities\Developer,
 	Entities\Device,
@@ -25,7 +23,6 @@ $sendMailError = "";
 
 $versionId = $_POST['selected_version'];
 $version = $entityManager->getRepository('Entities\Version')->find($versionId);
-$application = $version->getApplication();
 $msg = $_POST['body'];
 
 $smtp = Swift_SmtpTransport::newInstance($CRED_SMTP, $CRED_SMTP_PORT, 'ssl')
@@ -33,17 +30,17 @@ $smtp = Swift_SmtpTransport::newInstance($CRED_SMTP, $CRED_SMTP_PORT, 'ssl')
 ->setPassword($CRED_SMTP_PWD);
 $mailer = Swift_Mailer::newInstance($smtp);
 
-$appBundleId = $application->getBundleId();
-$app = $application->getName();
-$ver = $version->getVersion();
 $url = Tools::rel2abs('../runthisapp.php', Tools::current_url());
 
-function sendInvitationForDevice($device, $mailer, $url, $app, $ver, $msg, $entityManager) {
+function sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entityManager) {
 	
 	$udid = $device->getUdid();
 	$mail = $device->getTester()->getEmail();
 	$token = Tools::randomAppleRequestId();
-	
+        
+        $app = $version->getApplication()->getName();
+	$ver = $version->getVersion();
+        
 	if (empty($udid)) {
 		$result = send_enroll_mail($mailer, $url, $app, $ver, $msg, $mail, $token);
 	} else {
@@ -91,14 +88,14 @@ if ( $_POST['selected_device_new'] ) {
         $device->setTester($tester);
         $entityManager->persist($device);
         
-        sendInvitationForDevice($device, $mailer, $url, $app, $ver, $msg, $entityManager);
+        sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entityManager);
     }
 }
 
 if (isset($_POST['selected_devices'])) {
 	foreach ($_POST['selected_devices'] as $deviceId) {
 		$device = $entityManager->getRepository('Entities\Device')->find($deviceId);
-		sendInvitationForDevice($device, $mailer, $url, $app, $ver, $msg, $entityManager);
+		sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entityManager);
 	}
 }
 

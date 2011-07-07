@@ -7,14 +7,12 @@ use Entities\Invitation;
 require_once __DIR__ . '/lib/cfpropertylist/CFPropertyList.php';
 require_once __DIR__ . '/lib/Swift/lib/swift_required.php';
 require_once __DIR__ . '/credentials.php';
-require_once __DIR__ . '/lib/log.php';
 require_once __DIR__ . '/core/index.php';
+require_once __DIR__ . '/tools.php';
+require_once __DIR__ . '/mail.php';
 require_once __DIR__ . '/asn.php';
 
-
-$lf = new logfile();
-
-$ciphertext_file   = tempnam('', '__glancemyapp_');
+$ciphertext_file = tempnam('', '__glancemyapp_');
 file_put_contents($ciphertext_file, file_get_contents('php://input'));
 /*
 OpenSSL PHP implementation does'nt allow use to verify DER encoded CMS. :/
@@ -39,43 +37,38 @@ while (($e = openssl_error_string()) !== false) {
 	$lf->write('openssl error='.$e.PHP_EOL);
 }
 */
+
 $plistValue = retreivePlistFromAsn($ciphertext_file);
+/*
+ * TEST: $plistValue = '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>CHALLENGE</key><string>signed-auth-token</string><key>IMEI</key><string>00 000000 000000 0</string><key>PRODUCT</key><string>iPhone3,1</string><key>UDID</key><string>d2f22d586c333041d191c81e5bb80948732d6a68</string><key>VERSION</key><string>9A5248d</string></dict></plist>';
+ */
+
 if (empty($plistValue)) {
-	die("unable to read plist from configuration profile challenge.");
+    error_log('RTA::Unable to read plist from configuration profile challenge', 0);
+    die();
 }
 
 $plist = new CFPropertyList();
 $plist->parse( $plistValue, CFPropertyList::FORMAT_AUTO);
-
-//echo '<pre>';
-//var_dump( $plist->toArray() );
 $plistData = $plist->toArray();
-
-//$lf->writeln('UDID='.$plistData['UDID']);
-//$lf->writeln('mail='.$_GET['mail']);
-//$lf->writeln('app='.$_GET['app']);
-//$lf->writeln('key='.$_GET['key']);
-//echo '</pre>';
 
 $entityManager = initDoctrine();
 date_default_timezone_set('Europe/Paris');
 
-// Retrieve the tester with his mail (unique)
-$tester = $entityManager->getRepository('Entities\Tester')->findOneBy(array('email' => $_GET['mail']));
-if ( $tester == NULL ) {
-    die('This user does not exist!');
-}
-
-//TODO: add application check to retrieve invitation
-//TODO: use $_GET['app'] and $_GET['key'] to verify response integrity
 $invitation = $entityManager->getRepository('Entities\Invitation')->findOneBy(array('token' => $_GET['key']));
 if ( $invitation == NULL ) {
-    die('There is no valid invitation for this user!');
+    error_log('RTA::This invitation is not valid!', 0);
+    die();
+}
+
+$tester = $invitation->getTester();
+if ( $tester == NULL ) {
+    error_log('RTA::This user does not exist!', 0);
+    die();
 }
 
 //Verify if the device does not already exist (Update data for this device if it exists)
-$device = $entityManager->getRepository('Entities\Device')->findOneBy(array('udid' => $plistData['UDID']));
-
+$device = $invitation->getDevice();
 if ( $device == NULL ) {
     $device = new Device;
 }
@@ -85,7 +78,7 @@ $device->setDateCreation(new \DateTime("now"));
 $device->setSystemVersion($plistData['VERSION']);
 $device->setModel($plistData['PRODUCT']);
 $device->setUdid($plistData['UDID']);
-$device->setInvitation($invitation);
+//TODO: see why memory problem if uncoment $device->setInvitation($invitation);
 $device->setTester($tester);
 
 $invitation->setStatus(Invitation::STATUS_UDID);
@@ -94,44 +87,29 @@ $entityManager->persist($device);
 $entityManager->persist($invitation);
 $entityManager->flush();
 
-
 //Send the confirmation email
 
 $smtp = Swift_SmtpTransport::newInstance($CRED_SMTP, $CRED_SMTP_PORT, 'ssl')
 ->setUsername($CRED_SMTP_USR)
 ->setPassword($CRED_SMTP_PWD);
-
 $mailer = Swift_Mailer::newInstance($smtp);
-$body = 'Click on following link to install your app: ';
 
-//TODO: retrieve the app and version
+$url = Tools::rel2abs('runthisapp.php', Tools::current_url());
+$msg = 'Click on following link to install your app: ';
 
-//TODO: use the function service_address() like in enroll.php to have a valid address everytime
+$udid = $device->getUdid();
+$mail = $device->getTester()->getEmail();
+$token = $_GET['key'];
 
-$url = 'http://192.168.1.103/rta/runthisapp.php?udid=' . $device->getUdid() . '&app=' . $_GET['app'] . '&ver=' . '123';
+$app = $invitation->getVersion()->getApplication()->getName();
+$ver = $invitation->getVersion()->getVersion();
 
-$subject = '[2/2] RunThisApp invitation to test finish';
-$bodyHtml = $body . '<a href="' . $url . '">' . $url . '</a>';
-$bodyText = $body . $url;
-
-//Create the message
-$message = Swift_Message::newInstance()
-//Give the message a subject
-->setSubject($subject)
- //Set the From address with an associative array
-->setFrom(array($CRED_SMTP_USR => 'RunThisApp'))
-//Set the To addresses with an associative array
-->setTo(array($_GET['mail']))
-//Give it a body
-->setBody($bodyHtml, 'text/html')
-//And optionally an alternative body
-->addPart($bodyText, 'text/plain');
-
-$result = $mailer->send($message);
+$result = send_link_mail($mailer, $url, $app, $ver, $msg, $mail, $udid, $token);
 
 // Error
 if ( $result != 1 ) {
-    die('Error sending email');
+    error_log('RTA::Error sending email', 0);
+    die();
 }
 
 ?>

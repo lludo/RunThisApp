@@ -12,8 +12,8 @@
  */
 class Tools {
     
-	/**
-    * @return string current absolute uri 
+    /**
+     * @return string current absolute uri 
      */
     static function current_url() {
 		
@@ -89,8 +89,8 @@ class Tools {
         return $plistFilePath;
     }
 	
-	static function rel2abs($rel, $base)
-    {
+    static function rel2abs($rel, $base) {
+        
         /* return if already absolute URL */
         if (parse_url($rel, PHP_URL_SCHEME) != '') return $rel;
         /* queries and anchors */

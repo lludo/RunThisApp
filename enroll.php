@@ -17,7 +17,6 @@ function general_payload() {
 	return $payload;
 }
 
-
 function profile_service_payload($challenge) {
     $payload = general_payload();
 
@@ -31,7 +30,7 @@ function profile_service_payload($challenge) {
 	$mail = $_GET['mail'];
 	$app = $_GET['app'];
     $key = $_GET['key'];
-    $payload_content['URL'] = 'http://' . service_address() . '/profile.php?mail='.$mail.'&app='.$app.'&key='.$key;
+    $payload_content['URL'] = Tools::current_url() . '/profile.php?mail='.$mail.'&app='.$app.'&key='.$key;
     $payload_content['DeviceAttributes'] = array(
         'UDID', 
         'VERSION',
