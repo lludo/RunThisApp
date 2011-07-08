@@ -45,8 +45,8 @@ class Version {
     
     public function setApplication($application) {
     	if ($this->application !== $application) {
-        	$application->addVersion($this);
-        	$this->application = $application;
+            $this->application = $application;
+            $application->addVersion($this);
         }
     }
     
@@ -70,7 +70,7 @@ class Version {
         $this->version = $version;
     }
 	
-	public function getId() {
+    public function getId() {
         return $this->id;
     }
 	

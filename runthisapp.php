@@ -31,8 +31,7 @@
         $payload['PayloadDisplayName'] = "RunThisApp Profile Service";
         $payload['PayloadDescription'] = "Install this profile to allow applications deployement from RunThisApp";
         $payload_content = array();
-        //TODO: See Tools::current_url() function problem
-        $payload_content['URL'] = 'http://' . $_SERVER['SERVER_NAME'].'/rta' . '/profile.php?key=' . $key;
+        $payload_content['URL'] = Tools::rel2abs('profile.php?key=' . $key, Tools::current_url());
         $payload_content['DeviceAttributes'] = array(
             'UDID', 
             'VERSION',
@@ -121,14 +120,44 @@
         }
         return false;
     }
-
+    
     $isAppSigned = isAppSignedForUdid($_GET['udid'], $app, $ver, $entityManager);
+    
+    function generateDownloadPlistFile($application) {
+        
+        $payload_assets_content = array();
+        $payload_assets_content['kind'] = 'software-package';
+        $payload_assets_content['url'] = Tools::rel2abs('app/' . $application->getToken() . '/app_bundle.ipa', Tools::current_url());
+        
+        $payload_content = array();
+        $payload_content['assets'] = array( $payload_assets_content );
+        
+        $payload_metadata_content = array();
+        $payload_metadata_content['bundle-identifier'] = $application->getBundleId();
+        $payload_metadata_content['kind'] = 'software';
+        $payload_metadata_content['title'] = $application->getName();
+                
+        $payload_content['metadata'] = $payload_metadata_content;
+        
+        $payload = array();
+        $payload['items'] = array( $payload_content );
+        
+        $plist = new CFPropertyList();
 
+        $td = new CFTypeDetector();  
+        $cfPayload = $td->toCFType( $payload );
+        $plist->add( $cfPayload );
+        $data = $plist->toXML(true);
+        
+        $my_file = __DIR__ . '/app/' . $application->getToken() . '.plist';
+        $handle = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file);
+        fwrite($handle, $data);
+    }
+    
     //step4 provid link to dld app
-
-    //TODO: generate PLIST file and provide link
-    //$appLink = __DIR__ . '/app/' . $invitation->getVersion()->getApplication()->getToken() . '/app_bundle/Payload/';
+    
     $application = $entityManager->getRepository('Entities\Application')->findOneBy(array('bundleId' => $app));
+    generateDownloadPlistFile($application);
     
     $appLink = Tools::rel2abs('app/'. $application->getToken() .'.plist', Tools::current_url());
     $profileLink = Tools::rel2abs('app/'. $application->getToken() .'.mobileprovision', Tools::current_url());

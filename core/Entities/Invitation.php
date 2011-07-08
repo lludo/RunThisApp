@@ -105,8 +105,8 @@ class Invitation {
     
     public function setDeveloper($developer) {
     	if ($this->developer !== $developer) {
-        	$developer->addInvitation($this);
-        	$this->developer = $developer;
+            $this->developer = $developer;
+            $developer->addInvitation($this);
         }
     }
     
@@ -116,8 +116,8 @@ class Invitation {
     
     public function setDevice($device) {
     	if ($this->device !== $device) {
-        	$device->setInvitation($this);
-        	$this->device = $device;
+            $this->device = $device;
+            $device->setInvitation($this);
         }
     }
     
@@ -127,8 +127,8 @@ class Invitation {
     
     public function setTester($tester) {
     	if ($this->tester !== $tester) {
-        	$tester->addInvitation($this);
-        	$this->tester = $tester;
+            $this->tester = $tester;
+            $tester->addInvitation($this);
         }
     }
     
@@ -138,8 +138,8 @@ class Invitation {
     
     public function setVersion($version) {
     	if ($this->version !== $version) {
-        	$version->addInvitation($this);
-        	$this->version = $version;
+            $this->version = $version;
+            $version->addInvitation($this);
         }
     }
     

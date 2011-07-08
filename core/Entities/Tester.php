@@ -97,8 +97,8 @@ class Tester {
     
     public function setDeveloper($developer) {
     	if ($this->developer !== $developer) {
-        	$developer->addTester($this);
-        	$this->developer = $developer;
+            $this->developer = $developer;
+            $developer->addTester($this);
         }
     }
     

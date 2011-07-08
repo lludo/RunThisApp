@@ -1,3 +1,23 @@
+<?php
+    
+    use Entities\Application, 
+        Entities\Developer,
+        Entities\Device,
+        Entities\Invitation,
+        Entities\Tester,
+        Entities\Version;
+    
+    require_once __DIR__ . '/../core/index.php';
+    require_once __DIR__ . '/../tools.php';
+    
+    $entityManager = initDoctrine();
+    
+    // Retrieve all testers
+    date_default_timezone_set('Europe/Berlin');
+    $applications = $entityManager->getRepository('Entities\Application')->findAll();
+    
+?>
+
 <!doctype html>
 <html>
 <head>
@@ -35,27 +55,12 @@
 				
 				<?php
 				
-				use Entities\Application, 
-				    Entities\Developer,
-				    Entities\Device,
-				    Entities\Invitation,
-				    Entities\Tester,
-				    Entities\Version;
-				
-				require_once __DIR__ . '/../core/index.php';
-				
-				$entityManager = initDoctrine();
-				
-				// Retrieve all testers
-				date_default_timezone_set('Europe/Berlin');
-				$applications = $entityManager->getRepository('Entities\Application')->findAll();
-				
 				echo '<ul>';
 				foreach ($applications AS $application) {
 				    echo '<li>Application: <br/>->name: ' . $application->getName() . '<br />' . 
 				    	'->bundle: ' . $application->getBundleId() . '<br />' . 
-				    	'->app link: <a href="../app/' . $application->getName() . '.ipa">../app/' . $application->getName() . '.ipa</a><br />' . 
-				    	'->install on device: <a href="itms-services://?action=download-manifest&url=http://www.runthisapp.com/app/' . $application->getName() . '.plist">Install on device</a></li>' . PHP_EOL;
+				    	'->app link: <a href="' . Tools::rel2abs('../app/' . $application->getToken() . '/app_bundle.ipa', Tools::current_url()) . '">' . $application->getName() . '.ipa</a><br />' . 
+				    	'->install on device: <a href="itms-services://?action=download-manifest&url=' . Tools::rel2abs('../app/' . $application->getToken() . '.plist', Tools::current_url()) . '">Install on device</a></li>' . PHP_EOL;
 				}
 				echo '</ul>' . PHP_EOL;
 				

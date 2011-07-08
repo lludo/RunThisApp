@@ -56,7 +56,7 @@ class Developer {
     }
     
     public function setFirstName($firstName) {
-		$this->firstName = $firstName;
+	$this->firstName = $firstName;
     }
     
     public function getFirstName() {

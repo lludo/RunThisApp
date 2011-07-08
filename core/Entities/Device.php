@@ -52,11 +52,11 @@ class Device {
     	$this->id = $id;
     }
     
-	public function getId() {
+    public function getId() {
     	return $this->id;
     }
     
-	public function setName($name) {
+    public function setName($name) {
     	$this->name = $name;
     }
     
@@ -98,8 +98,8 @@ class Device {
     
     public function setInvitation($invitation) {
     	if ($this->invitation !== $invitation) {
-        	$invitation->setDevice($this);
-        	$this->invitation = $invitation;
+            $this->invitation = $invitation;
+            $invitation->setDevice($this);
         }
     }
     
@@ -108,9 +108,9 @@ class Device {
     }
     
     public function setTester($tester) {
-   		if ($this->tester !== $tester) {
-        	$tester->addDevice($this);
-        	$this->tester = $tester;
+   	if ($this->tester !== $tester) {
+            $this->tester = $tester;
+            $tester->addDevice($this);
         }
     }
     

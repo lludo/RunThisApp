@@ -51,22 +51,20 @@ function sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entity
 	if ( $result == 1 ) {
 	    $nbInvitations++;
 	    
-	    $tester = $entityManager->getRepository('Entities\Tester')->findOneBy(array('email' => $email));
-	    
 	    //TODO: if tester does not exist, create it.
 	    
 	    $invitation = new Invitation();
-	    $invitation->setSubject("//TODO delete me");
+	    $invitation->setSubject("Mail subject");
 	    $invitation->setText($msg);
 	    $invitation->setToken($token);
 	    $invitation->setDateSent(new \DateTime("now"));
 	    $invitation->setStatus(Invitation::STATUS_SENT);
 	    //$invitation->setDeveloper(//TODO:)
-	    $invitation->SetTester($tester);
-	    $invitation->SetVersion($version);
+	    $invitation->setTester($device->getTester());
+            $invitation->setDevice($device);
+	    $invitation->setVersion($version);
 	    $entityManager->persist($invitation);
-	    
-	    //TODO: add application to invitation object in model !!!
+	    $entityManager->flush();
 	}
 	// Error
 	else {
@@ -87,6 +85,7 @@ if ( $_POST['selected_device_new'] ) {
         $device = new Device();
         $device->setTester($tester);
         $entityManager->persist($device);
+        $entityManager->flush();
         
         sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entityManager);
     }

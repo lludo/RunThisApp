@@ -1,10 +1,7 @@
 <?php
 
-
-/**
- * Require CFPropertyList
- */
-require_once(dirname(__FILE__).'/lib/cfpropertylist/CFPropertyList.php');
+require_once __DIR__ . '/lib/cfpropertylist/CFPropertyList.php';
+require_once __DIR__ . '/tools.php';
 
 function general_payload() {
 	
@@ -27,10 +24,7 @@ function profile_service_payload($challenge) {
     $payload['PayloadDisplayName'] = "RunThisApp Profile Service";
     $payload['PayloadDescription'] = "Install this profile to allow applications deployement from RunThisApp";
     $payload_content = array();
-	$mail = $_GET['mail'];
-	$app = $_GET['app'];
-    $key = $_GET['key'];
-    $payload_content['URL'] = Tools::current_url() . '/profile.php?mail='.$mail.'&app='.$app.'&key='.$key;
+    $payload_content['URL'] = Tools::rel2abs('/profile.php?key=' . $_GET['key'], Tools::current_url());
     $payload_content['DeviceAttributes'] = array(
         'UDID', 
         'VERSION',

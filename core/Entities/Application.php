@@ -102,8 +102,8 @@ class Application {
     
     public function setDeveloper($developer) {
     	if ($this->developer !== $developer) {
-        	$developer->addApplication($this);
-        	$this->developer = $developer;
+            $this->developer = $developer;
+            $developer->addApplication($this);
         }
     }
     

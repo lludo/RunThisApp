@@ -29,11 +29,11 @@
 				<h2>Run This App - First tests</h2>
 			</div>
 			<div>
-				<p>Click this link to subscribe to the best test program of iOS applications (User 1): <br><a href="enroll.php?mail=test@test.com&app=1234&key=5678">http://www.runthisapp.com/enroll.php?user=test@test.com&app=1234&key=5678</a></p>
-				<img src="http://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=http://www.runthisapp.com/enroll.php%3Fmail=test@test.com%26app=1234%26key=5678" />
+				<p>Click this link to subscribe to the best test program of iOS applications (Tester 1): <br><a href="enroll.php?token=1908FC34-1FFE-C2E2-47A1-924452B5B834">http://www.runthisapp.com/enroll.php?token=1908FC34-1FFE-C2E2-47A1-924452B5B834</a></p>
+				<img src="http://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=http://www.runthisapp.com/enroll.php%3Ftoken=1908FC34-1FFE-C2E2-47A1-924452B5B834" />
 				<h3 class="underline">&nbsp;</h3>
-				<p>Click this link to subscribe to the best test program of iOS applications (User 2): <br><a href="enroll.php?mail=test2@test.com&app=1234&key=9012">http://www.runthisapp.com/enroll.php?user=test2@test.com&app=1234&key=9012</a></p>
-				<img src="http://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=http://www.runthisapp.com/enroll.php%3Fmail=test2@test.com%26app=1234%26key=9012" />
+				<p>Click this link to subscribe to the best test program of iOS applications (Tester 2): <br><a href="enroll.php?token=91FF2445-2B5B-8343-41FF-EC2E247A144D">http://www.runthisapp.com/enroll.php?token=91FF2445-2B5B-8343-41FF-EC2E247A144D</a></p>
+				<img src="http://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=http://www.runthisapp.com/enroll.php%3Ftoken=91FF2445-2B5B-8343-41FF-EC2E247A144D" />
 			</div>
 		</div>
 		
