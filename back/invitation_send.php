@@ -37,8 +37,8 @@ function sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entity
 	$udid = $device->getUdid();
 	$mail = $device->getTester()->getEmail();
 	$token = Tools::randomAppleRequestId();
-        
-        $app = $version->getApplication()->getName();
+
+	$app = $version->getApplication()->getName();
 	$ver = $version->getVersion();
         
 	if (empty($udid)) {
@@ -61,8 +61,9 @@ function sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entity
 	    $invitation->setStatus(Invitation::STATUS_SENT);
 	    //$invitation->setDeveloper(//TODO:)
 	    $invitation->setTester($device->getTester());
-            $invitation->setDevice($device);
+		$invitation->setDevice($device);
 	    $invitation->setVersion($version);
+	    $entityManager->persist($device);
 	    $entityManager->persist($invitation);
 	    $entityManager->flush();
 	}
@@ -94,6 +95,7 @@ if ( $_POST['selected_device_new'] ) {
 if (isset($_POST['selected_devices'])) {
 	foreach ($_POST['selected_devices'] as $deviceId) {
 		$device = $entityManager->getRepository('Entities\Device')->find($deviceId);
+		//echo var_dump($device);
 		sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entityManager);
 	}
 }

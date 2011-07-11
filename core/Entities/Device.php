@@ -2,6 +2,8 @@
 
 namespace Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * @Entity @Table(name="device")
  */
@@ -38,15 +40,18 @@ class Device {
     private $udid;
     
     /**
-    * @OneToOne(targetEntity="Invitation")
-    * @JoinColumn(name="id_invitation", referencedColumnName="id", nullable=true)
+    * @OneToMany(targetEntity="Invitation", mappedBy="device")
     */
-    private $invitation;
+    private $invitations;
     
     /**
      * @ManyToOne(targetEntity="Tester", inversedBy="devices")
      */
     private $tester;
+    
+    public function __construct() {
+        $this->invitations = new ArrayCollection();
+    }
     
     public function setId($id) {
     	$this->id = $id;
@@ -96,15 +101,12 @@ class Device {
     	return $this->udid;
     }
     
-    public function setInvitation($invitation) {
-    	if ($this->invitation !== $invitation) {
-            $this->invitation = $invitation;
-            $invitation->setDevice($this);
-        }
+    public function addInvitation($invitation) {
+    	$this->invitations[] = $invitation;
     }
     
-    public function getInvitation() {
-        return $this->invitation;
+    public function getInvitations() {
+        return $this->invitations;
     }
     
     public function setTester($tester) {

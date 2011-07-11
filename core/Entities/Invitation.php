@@ -48,8 +48,7 @@ class Invitation {
     private $developer;
     
     /**
-     * @OneToOne(targetEntity="Device") 
-     * @JoinColumn(name="id_device", referencedColumnName="id")
+     * @ManyToOne(targetEntity="Device", inversedBy="invitations")
      */
     private $device;
     
@@ -117,7 +116,7 @@ class Invitation {
     public function setDevice($device) {
     	if ($this->device !== $device) {
             $this->device = $device;
-            $device->setInvitation($this);
+            $device->addInvitation($this);
         }
     }
     
