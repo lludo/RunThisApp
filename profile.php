@@ -78,7 +78,7 @@ $device->setDateCreation(new \DateTime("now"));
 $device->setSystemVersion($plistData['VERSION']);
 $device->setModel($plistData['PRODUCT']);
 $device->setUdid($plistData['UDID']);
-//TODO: see why memory problem if uncoment $device->setInvitation($invitation);
+$device->addInvitation($invitation);
 $device->setTester($tester);
 
 $invitation->setStatus(Invitation::STATUS_UDID);
