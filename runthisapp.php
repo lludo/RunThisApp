@@ -56,51 +56,10 @@
             return $plist->toXML(true);
     }
 
-    //Step 1 check needed params:
-    if (!isset($_GET['token']))
+    function isAppSignedForUdid($udid, $application)
     {
-        die('parameter token are needed (udid optional)');
-    }
-
-    //step 2 check that user is allowed to dl this app and this version:
-    //TODO using $_GET["udid"]
-    $entityManager = initDoctrine();
-    date_default_timezone_set('Europe/Paris');
-
-    $invitation = $entityManager->getRepository('Entities\Invitation')->findOneBy(array('token' => $_GET['token']));
-    if ( $invitation == NULL ) {
-        die('This invitation is not valid!');
-    }
-
-    if (!isset($_GET['udid'])) {
-        $action = 'ENROLL';
-        $isNotRegistered = ($invitation->getStatus() == Invitation::STATUS_SENT);
-    } else {
-        $action = 'DOWNLOAD';
-    }
-
-    $app = $invitation->getVersion()->getApplication()->getBundleId();
-    $ver = $invitation->getVersion()->getVersion();
-
-    if ($action == 'ENROLL' && $isNotRegistered) {
-
-        $mail = $invitation->getTester()->getEmail();
-        header('Content-Type: application/x-apple-aspen-config');
-
-        $payload =  profile_service_payload('signed-auth-token', $_GET['token']);
-        echo $payload;
-
-        die ();
-    }
-
-    //step3 check that this app is already signed for this udid
-    //if not sign it.
-    function isAppSignedForUdid($udid, $app, $ver, $entityManager)
-    {
-            $application = $entityManager->getRepository('Entities\Application')->findOneBy(array('bundleId' => $app));
-
-            //TODO: Token folder should be on version, not application
-            //$version = $entityManager->getRepository('Entities\Version')->findOneBy(array('application' => $application->getId(), 'version' => $ver));
+		
+        //TODO: Token folder should be on version, not application
 
         $plistValue = __DIR__ . '/app/' . $application->getToken() . '/app_bundle/Payload/' . $application->getName() . '.app/embedded.mobileprovision';
         $plistValue = retreivePlistFromAsn($plistValue);
@@ -120,8 +79,6 @@
         }
         return false;
     }
-    
-    $isAppSigned = isAppSignedForUdid($_GET['udid'], $app, $ver, $entityManager);
     
     function generateDownloadPlistFile($application) {
         
@@ -153,10 +110,49 @@
         $handle = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file);
         fwrite($handle, $data);
     }
+
+    //Step 1 check needed params:
+    if (!isset($_GET['token']))
+    {
+        die('parameter token are needed (udid optional)');
+    }
+
+    //step 2 check that user is allowed to dl this app and this version:
+    //TODO using $_GET["udid"]
+    $entityManager = initDoctrine();
+    date_default_timezone_set('Europe/Paris');
+
+    $invitation = $entityManager->getRepository('Entities\Invitation')->findOneBy(array('token' => $_GET['token']));
+    if ( $invitation == NULL ) {
+        die('This invitation token is not valid!');
+    }
+
+    if (!isset($_GET['udid'])) {
+        $action = 'ENROLL';
+        $isNotRegistered = ($invitation->getStatus() == Invitation::STATUS_SENT);
+    } else {
+        $action = 'DOWNLOAD';
+    }
+	$application = $invitation->getVersion()->getApplication();
+
+    if ($action == 'ENROLL' && $isNotRegistered) {
+
+        $mail = $invitation->getTester()->getEmail();
+        header('Content-Type: application/x-apple-aspen-config');
+
+        $payload =  profile_service_payload('signed-auth-token', $_GET['token']);
+        echo $payload;
+
+        die ();
+    }
+
+    //step3 check that this app is already signed for this udid
+    //if not sign it.
+    $isAppSigned = isAppSignedForUdid($_GET['udid'], $application);
+    
+    $isAppSigned = false;
     
     //step4 provid link to dld app
-    
-    $application = $entityManager->getRepository('Entities\Application')->findOneBy(array('bundleId' => $app));
     generateDownloadPlistFile($application);
     
     $appLink = Tools::rel2abs('app/'. $application->getToken() .'.plist', Tools::current_url());
@@ -190,7 +186,7 @@
 </head>
 <body>
     <span id="link">
-        Here is your link: <a href="itms-services://?action=download-manifest&url=<?php echo $appLink; ?>">Application id <?php echo $app; ?></a>
+        Here is your link: <a href="itms-services://?action=download-manifest&url=<?php echo $appLink; ?>">Application id <?php echo $application->getBundleId(); ?></a>
         (Profile link: <a href="<?php echo $profileLink; ?>">Application profile</a>)
     </span>
     <?php
@@ -211,16 +207,23 @@
         ?>
             <span id="wait">
                 Please Wait...
-                </span>
-                <script>
-                $.ajax({
-                        type: "POST",
-                        url: "sign.php",
-                        data: "app=<?php echo $app ?>&ver=<?php echo $ver ?>&udid=<?php echo $_GET['udid'] ?>",
-                        success: function(msg){	
-                                showTheLink(true);
-                        }
-                 });
+            </span>
+            <script>
+	            $.ajax({
+                    type: "GET",
+                    url: "sign.php",
+                    data: "token=<?php echo $_GET['token']; ?>&udid=<?php echo $_GET['udid']; ?>",
+                    success: function(msg){	
+                    	showTheLink(true);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                    	var msg = $("span#wait").empty().append("Unable to sign!");
+                    	if (jqXHR && jqXHR.responseText) {
+                    		//append error msg
+                        	msg.append(' ' . jqXHR.responseText);
+                    	}
+                    }
+	             });
             </script>
     <?php
         }

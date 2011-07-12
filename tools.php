@@ -8,7 +8,7 @@
 /**
  * Description of tools
  *
- * @author Ludovic Landry
+ * @author Ludovic Landry et pis aussi un peu pcans :p
  */
 class Tools {
     
@@ -110,6 +110,40 @@ class Tools {
         /* absolute URL is ready! */
         return $scheme.'://'.$abs;
     }
+    
+    static function dieError($msg) {
+    	if (!headers_sent()) {
+    		header('HTTP/1.0 500 Internal Server Error');
+    	}
+    	die('Error: ' . $msg);
+    }
 }
 
+function display_xml_errors($error, $xml)
+{
+    $return  = $xml[$error->line - 1] . "\n";
+    $return .= str_repeat('-', $error->column) . "^\n";
+
+    switch ($error->level) {
+        case LIBXML_ERR_WARNING:
+            $return .= "Warning $error->code: ";
+            break;
+         case LIBXML_ERR_ERROR:
+            $return .= "Error $error->code: ";
+            break;
+        case LIBXML_ERR_FATAL:
+            $return .= "Fatal Error $error->code: ";
+            break;
+    }
+
+    $return .= trim($error->message) .
+               "\n  Line: $error->line" .
+               "\n  Column: $error->column";
+
+    if ($error->file) {
+        $return .= "\n  File: $error->file";
+    }
+
+    return "$return\n\n--------------------------------------------\n\n";
+}
 ?>

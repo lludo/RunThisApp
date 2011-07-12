@@ -6,6 +6,8 @@
  * demonstrates the bootstrapping and configuration procedure of Doctrine 2.
  * Below that section you can place your test code and experiment.
  */
+ 
+ //TODO rename this file to initDoctrine.php
 
 use Doctrine\Common\ClassLoader,
     Doctrine\ORM\Configuration,
