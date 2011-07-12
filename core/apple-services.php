@@ -841,6 +841,7 @@ class AppleServices {
             'path=%2F%2Fdevcenter%2Fios%2Findex.action';
         
         $dom = new DOMDocument();
+        libxml_use_internal_errors(true);
         if ( $dom->loadHTMLFile($login_url) ) {
             
             $xpath = new DOMXPath($dom);
@@ -849,7 +850,9 @@ class AppleServices {
             $login_post_url = $form->getAttribute('action');
         }
         else {
-            echo 'error parsing 1';
+            $errors = libxml_get_errors();
+            echo display_xml_errors($errors, $login_url);
+            libxml_clear_errors();
             return FALSE;
         }
         
@@ -936,6 +939,7 @@ class AppleServices {
         
         // Load dom the page
         $dom = new DOMDocument();
+        libxml_use_internal_errors(true);
         if ( $dom->loadHTML($data) ) {
 
             $xpath = new DOMXPath($dom);
@@ -979,8 +983,7 @@ class AppleServices {
 
 
             //TODO: work in progress... (tmp: display url, data,...)
-            $xpath_form = new DOMXPath($dom);
-            $form = $xpath_form->query('//form[@name="save"]')->item(0);
+            $form = $xpath->query('//form[@name="save"]')->item(0);
             
             $edit_post_url = 'https://developer.apple.com' . $form->getAttribute('action');
             
@@ -990,8 +993,9 @@ class AppleServices {
             }
         }
         else {
-
-            echo 'error parsing 2';
+			$errors = libxml_get_errors();
+			echo display_xml_errors($errors, $login_url);
+			libxml_clear_errors();
             return FALSE;
         }
         
