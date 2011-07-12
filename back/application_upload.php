@@ -149,6 +149,7 @@
 						     			$plistfile = Tools::getInfoPlistPath($folder_token);
 						      			echo 'Plist file: ' . $plistfile . '<br />';
 						    			
+						    			//TODO connect to apple and be sure a profile exists for this app.
                                                                         
 						    			//Create an application object and set basic data here
 						    			$entityManager = initDoctrine();
