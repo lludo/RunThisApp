@@ -27,26 +27,26 @@ Installation
 1. The best way to install RunThisApp is to download it from [our Github repository][2].
 
 2. Then you have to configure git submodules by executing the following commands in your git directory:
-	
-`	git submodule init
-	git submodule update`
-	
+
+    git submodule init
+    git submodule update
+
 3. RunThisApp use [Doctrine][3] (an Object relational mapper for PHP) and an SQLite database. To initialize this database, in the core subfolder, you have to execute:
-	
-`	./doctrine orm:schema-tool:create`
+
+    ./doctrine orm:schema-tool:create
 	
 4. For sending emails to testers and accessing your Apple Developer account, you have to fill the file credential.php:
-	
-`	<?php
-		$CRED_USR = '__your_user__';
-		$CRED_PWD = '__your_passwd__';
-		
-		$CRED_SMTP = 'smtp.gmail.com';		// example
-		$CRED_SMTP_PORT = 465;				// example
-		$CRED_SMTP_USR = '__your_email__';
-		$CRED_SMTP_PWD = '__your_passwd__';
-	?>`
-	
+
+    <?php
+        $CRED_USR = '__your_user__';
+        $CRED_PWD = '__your_passwd__';
+        
+        $CRED_SMTP = 'smtp.gmail.com';		// example
+        $CRED_SMTP_PORT = 465;				// example
+        $CRED_SMTP_USR = '__your_email__';
+        $CRED_SMTP_PWD = '__your_passwd__';
+    ?>
+
 5. Last step is to set the permissions to allow the server to write some folder. The following folders needs to be writable (chmod ugo+rwx __file__):
 
 For the SQLitedatabase and Doctrine:
