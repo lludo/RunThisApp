@@ -47,7 +47,8 @@ function getReadableDeviceName($deviceModel) {
 function getReadableOsVersion($osBuild) {
 
 	$os = array(
-	'1A543a' => '1.0',
+        '1A420' => '1.0',
+	'1A543a' => '1.0.0',
 	'1C25' => '1.0.1',
 	'1C28' => '1.0.2',
 	'3A100a' => '1.1',
@@ -58,13 +59,14 @@ function getReadableOsVersion($osBuild) {
 	'4A93' => '1.1.3',
 	'4A102' => '1.1.4',
 	'4B1' => '1.1.5',
+        '5A345' => '2.0',
 	'5A347' => '2.0',
 	'5B108' => '2.0.1',
 	'5C1' => '2.0.2',
 	'5F136' => '2.1',
 	'5F137' => '2.1',
-	'5F138' => '2.1',
-	'9M2517' => '2.1',
+	'5F138' => '2.1.1',
+	'9M2517' => '2.1.1',
 	'5G77' => '2.2',
 	'5G77a' => '2.2',
 	'5H11' => '2.2.1',
@@ -94,7 +96,10 @@ function getReadableOsVersion($osBuild) {
 	'8F190' => '4.3',
 	'8G4' => '4.3.1',
 	'8H7' => '4.3.2',
-	'8H8' => '4.3.2');
+	'8H8' => '4.3.2',
+        '8J2' => '4.3.3',
+	'8J3' => '4.3.3',
+        '8K2' => '4.3.4');
 	
 	//TODO: add error management if build is unknown
 	
