@@ -27,17 +27,15 @@
 </head>
 <body>
 
-	<div id="header">
-		<h2><a href="../">Run This App</a></h2>
-		<ul class="menu">
-			<li class="invitations"><a href="invitation_list.php">Invitations</a></li>
-			<li class="testers active">Testers</li>
-        	<li class="applications"><a href="application_list.php">Applications</a></li>
-		</ul>
-		
-	</div>
+    <?php include __DIR__ . '/../header.php';?>
 	
-	<p>//TODO</p>
+    <form method="POST" action="tester_create.php">
+        <p>
+            Name: <input type="text" name="name" placeholder="enter tester name"/><br/>
+            Email: <input type="text" name="email" placeholder="enter tester email" /><br/>
+            <input type="submit" value="send" />
+	</p>
+    </form>
 	
 </body>
 </html>

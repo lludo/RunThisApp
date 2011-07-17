@@ -18,26 +18,36 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-?><!doctype html>
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Run This App | Register</title>
-	<link href="../css/style-0001.css" media="screen" type="text/css" rel="stylesheet">
-</head>
-<body>
+use Entities\Application, 
+	Entities\Developer,
+	Entities\Device,
+	Entities\Invitation,
+	Entities\Tester,
+	Entities\Version;
 
-	<div id="header">
-		<h2><a href="../">Run This App</a></h2>
-		<ul class="menu">
-			<li class="invitations"><a href="invitation_list.php">Invitations</a></li>
-			<li class="testers active">Testers</li>
-        	<li class="applications"><a href="application_list.php">Applications</a></li>
-		</ul>
-		
-	</div>
-	
-	<p>//TODO</p>
-	
-</body>
-</html>
+require_once __DIR__ . '/../core/index.php';
+require_once __DIR__ . '/../core/functions.php';
+require_once __DIR__ . '/../tools.php';
+
+if (!isset($_POST['name'], $_POST['email']) ) {
+    die('parameters needed.'); 
+}
+
+$entityManager = initDoctrine();
+
+$tester = $entityManager->getRepository('Entities\Tester')->findOneBy(array('email' => $_POST['email']));
+if ($tester != NULL) {
+    die('A tester with the email adress '.$_POST['email'].' already exists'); 
+}
+        
+$tester = new Tester();
+$tester->setName($_POST['name']);
+$tester->setEmail($_POST['email']);
+$entityManager->persist($tester);
+$entityManager->flush();
+
+//TODO link to dev
+
+header('Location: tester_list.php');   
+
+?>

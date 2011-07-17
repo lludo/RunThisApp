@@ -22,22 +22,21 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Run This App | Login</title>
-	<link href="../css/style-0001.css" media="screen" type="text/css" rel="stylesheet">
+	<title>Run This App | Register</title>
+	<link href="css/style-0001.css" media="screen" type="text/css" rel="stylesheet">
 </head>
 <body>
-
-	<div id="header">
-		<h2><a href="../">Run This App</a></h2>
-		<ul class="menu">
-			<li class="invitations"><a href="invitation_list.php">Invitations</a></li>
-			<li class="testers active">Testers</li>
-        	<li class="applications"><a href="application_list.php">Applications</a></li>
-		</ul>
-		
-	</div>
-	
-	<p>//TODO</p>
+    
+    <?php include('header.php'); ?>
+    
+    <form method="POST" action="back/developer_create.php">
+        <p>
+            Name: <input type="text" name="name" placeholder="enter tester name"/><br/>
+            Email: <input type="text" name="email" placeholder="enter tester email" /><br/>
+            Password: <input type="password" name="pwd" placeholder="enter password" /><br/>
+            <input type="submit" value="send" />
+	</p>
+    </form>
 	
 </body>
 </html>
