@@ -56,7 +56,7 @@ function sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entity
 	$mail = $device->getTester()->getEmail();
 	$token = Tools::randomAppleRequestId();
 
-	$app = $version->getApplication()->getName();
+	$app = $version->getName();
 	$ver = $version->getVersion();
         
 	if (empty($udid)) {
