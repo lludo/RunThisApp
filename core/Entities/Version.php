@@ -53,6 +53,16 @@ class Version {
     private $application;
     
     /**
+     * @Column(type="string", length=50, nullable=true)
+     */
+    private $token;
+    
+    /**
+     * @Column(type="string", length=50, nullable=true)
+     */
+    private $name;
+
+    /**
      * @OneToMany(targetEntity="Invitation", mappedBy="version")
      */
     private $invitations = null;
@@ -102,6 +112,22 @@ class Version {
     
     public function getDateUpload() {
     	return $this->dateUpload;
+    }
+    
+    public function getToken() {
+    	return $this->token;
+    }
+    
+    public function setToken($token) {
+    	$this->token = $token;
+    }
+    
+    public function getName() {
+    	return $this->name;
+    }
+    
+    public function setName($name) {
+    	$this->name = $name;
     }
 }
 

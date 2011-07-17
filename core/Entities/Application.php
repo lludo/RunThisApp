@@ -33,30 +33,20 @@ class Application {
     private $id;
     
     /**
-     * @Column(type="string", length=50, nullable=true)
-     */
-    private $name;
-    
-    /**
-     * @Column(type="string", name="icon_file", length=50, nullable=true)
-     */
-    private $iconFile;
-    
-    /**
      * @Column(type="string", name="bundle_id", length=50, nullable=true)
      */
     private $bundleId;
     
     /**
+     * @Column(type="string", name="bundle_name", length=50, nullable=true)
+     */
+    private $bundleName;
+    
+    /**
      * @Column(type="string", unique=true, length=250, nullable=true)
      */
     private $text;
-    
-    /**
-     * @Column(type="string", name="token", length=50, nullable=true)
-     */
-    private $token;
-    
+        
     /**
      * @ManyToMany(targetEntity="Tester", inversedBy="applications")
      * @JoinTable(name="application_tester",
@@ -81,28 +71,12 @@ class Application {
         $this->versions = new ArrayCollection();
     }
     
-    public function getName() {
-    	return $this->name;
+    public function getBundleName() {
+    	return $this->bundleName;
     }
     
-    public function setName($name) {
-    	$this->name = $name;
-    }
-    
-    public function getIconFile() {
-    	return $this->iconFile;
-    }
-    
-    public function setIconFile($iconFile) {
-    	$this->iconFile = $iconFile;
-    }
-    
-    public function getToken() {
-    	return $this->token;
-    }
-    
-    public function setToken($token) {
-    	$this->token = $token;
+    public function setBundleName($bundleName) {
+    	$this->bundleName = $bundleName;
     }
     
     public function getBundleId() {
