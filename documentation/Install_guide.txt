@@ -38,3 +38,6 @@ PHP 5 required
 in php.ini
 
 change the "upload_max_filesize" if required
+
+
+notice: Le dossier hébergeant le site ne doit pas s'appleler 'back'
