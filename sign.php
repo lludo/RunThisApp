@@ -20,6 +20,8 @@
 
 use Entities\Application;
 
+
+require_once __DIR__ . '/constants.php';
 require_once __DIR__ . '/tools.php';
 require_once __DIR__ . '/lib/cfpropertylist/CFPropertyList.php';
 require_once __DIR__ . '/asn.php';
@@ -39,14 +41,12 @@ if ( !isset($_GET['udid'], $_GET['token']) ) {
 
 //load application from database.
 $entityManager = initDoctrine();
-//TODO do not use specific tz
-date_default_timezone_set('Europe/Paris');
 
 $invitation = $entityManager->getRepository('Entities\Invitation')->findOneBy(array('token' => $_GET['token']));
 if ( $invitation == NULL ) {
     Tools::dieError('This invitation token is not valid!');
 }
-$application = $invitation->getVersion()->getApplication();
+$version = $invitation->getVersion();
 
 
 $result = AppleServices::connect($CRED_USR, $CRED_PWD);
@@ -118,14 +118,14 @@ if ( $result['resultCode'] != 0 ) {
 
 $profile_id_found = NULL;
 foreach ($result['provisioningProfiles'] as $profile) {
-    if ($application->getBundleId() == $profile['appId']['identifier']) {
+    if ($version->getApplication()->getBundleId() == $profile['appId']['identifier']) {
         $profile_id_found = $profile['provisioningProfileId'];
         break;
     }
 }
 
 if ( $profile_id_found != NULL ) {
-    echo '<p>Profile found for app: ' . $application->getBundleId() . ' (' . $profile_id_found . ')</p>' . PHP_EOL;
+    echo '<p>Profile found for app: ' . $version->getApplication()->getBundleId() . ' (' . $profile_id_found . ')</p>' . PHP_EOL;
 } else {
     Tools::dieError('Profile not found for the app requested!');
 }
@@ -148,7 +148,7 @@ while ( strcmp($new_profile_id, $profile_id_found) == 0 ) {
     }
     
     foreach ($result['provisioningProfiles'] as $profile) {
-        if ($application->getBundleId() == $profile['appId']['identifier']) {
+        if ($version->getApplication()->getBundleId() == $profile['appId']['identifier']) {
             $new_profile_id = $profile['provisioningProfileId'];
             break;
         }
@@ -175,7 +175,7 @@ if ( $result['resultCode'] != 0 ) {
 $new_profile = $result['provisioningProfile']['encodedProfile'];
 
 //TODO: save this with the app binary (tmp: save in app folder with bundle id)
-$newfile = __DIR__ . '/app/' . $application->getToken() . '.mobileprovision';
+$newfile = __DIR__ . '/'.UPLOAD_PATH . $version->getToken() . '.mobileprovision';
 $file = fopen ($newfile, "w");
 fwrite($file, $new_profile);
 fclose ($file); 

@@ -61,7 +61,7 @@ textarea {
                 foreach ($applications as $application) {
                         $versions = $application->getVersions();
                         foreach ($versions as $version) {
-                                echo '<option value="' . $version->getId() . '">' . $application->getName() . ' v' . $version->getVersion() . '</option>' . PHP_EOL;
+                                echo '<option value="' . $version->getId() . '">' . $version->getName() . ' v' . $version->getVersion() . '</option>' . PHP_EOL;
                         }
                 }
             ?>	

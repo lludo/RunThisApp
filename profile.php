@@ -119,7 +119,7 @@ $udid = $device->getUdid();
 $mail = $device->getTester()->getEmail();
 $token = $_GET['key'];
 
-$app = $invitation->getVersion()->getApplication()->getName();
+$app = $invitation->getVersion()->getName();
 $ver = $invitation->getVersion()->getVersion();
 
 $result = send_link_mail($mailer, $url, $app, $ver, $msg, $mail, $udid, $token);

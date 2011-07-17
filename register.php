@@ -31,9 +31,9 @@
     
     <form method="POST" action="back/developer_create.php">
         <p>
-            Name: <input type="text" name="name" placeholder="enter tester name"/><br/>
-            Email: <input type="text" name="email" placeholder="enter tester email" /><br/>
-            Password: <input type="password" name="pwd" placeholder="enter password" /><br/>
+            Display Name: <input type="text" name="name" placeholder="enter your display name"/><br/>
+            Email: <input type="text" name="email" placeholder="enter your email" /><br/>
+            Password: <input type="password" name="pwd" placeholder="enter a password" /><br/>
             <input type="submit" value="send" />
 	</p>
     </form>

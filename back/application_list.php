@@ -25,6 +25,7 @@
         Entities\Tester,
         Entities\Version;
     
+    require_once __DIR__ . '/../constants.php';
     require_once __DIR__ . '/../core/index.php';
     require_once __DIR__ . '/../tools.php';
     
@@ -62,10 +63,21 @@
 				
 				echo '<ul>';
 				foreach ($applications AS $application) {
-				    echo '<li>Application: <br/>->name: ' . $application->getName() . '<br />' . 
-				    	'->bundle: ' . $application->getBundleId() . '<br />' . 
-				    	'->app link: <a href="' . Tools::rel2abs('../app/' . $application->getToken() . '/app_bundle.ipa', Tools::current_url()) . '">' . $application->getName() . '.ipa</a><br />' . 
-				    	'->install on device: <a href="itms-services://?action=download-manifest&url=' . Tools::rel2abs('../app/' . $application->getToken() . '.plist', Tools::current_url()) . '">Install on device</a></li>' . PHP_EOL;
+				    echo '<li>Application: <br/>'
+                                        .'->bundle name: ' . $application->getBundleName() . '<br />'
+                                        .'->bundle id: ' . $application->getBundleId() . '<br />'
+                                        .'->icon: <img src="'.'../'.UPLOAD_PATH. $application->getBundleId().'.png"><br />';
+				    	
+                                    echo '<ul>';
+                                    foreach ($application->getVersions() AS $version) {
+                                	echo '<li>Version:<br/>'
+                                        .'->version: '.$version->getVersion().'<br />'
+				    	.'->date upload: '.$version->getDateUpload()->format(DEFAULT_DATETIME_FORMAT).'<br />'
+				    	.'->app link: <a href="' . Tools::rel2abs('../app/' . $version->getToken() . '/app_bundle.ipa', Tools::current_url()) . '">' . $version->getName() . '.ipa</a><br />'
+				    	.'->install on device: <a href="itms-services://?action=download-manifest&url=' . Tools::rel2abs('../app/' . $version->getToken() . '.plist', Tools::current_url()) . '">Install on device</a></li>' . PHP_EOL;
+                                        
+                                    }
+                                    echo '</ul>' . PHP_EOL;
 				}
 				echo '</ul>' . PHP_EOL;
 				

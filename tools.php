@@ -130,33 +130,70 @@ class Tools {
     	}
     	die('Error: ' . $msg);
     }
-}
 
-function display_xml_errors($error, $xml)
-{
-    $return  = $xml[$error->line - 1] . "\n";
-    $return .= str_repeat('-', $error->column) . "^\n";
+    static function display_xml_errors($error, $xml)
+    {
+        $return  = $xml[$error->line - 1] . "\n";
+        $return .= str_repeat('-', $error->column) . "^\n";
 
-    switch ($error->level) {
-        case LIBXML_ERR_WARNING:
-            $return .= "Warning $error->code: ";
-            break;
-         case LIBXML_ERR_ERROR:
-            $return .= "Error $error->code: ";
-            break;
-        case LIBXML_ERR_FATAL:
-            $return .= "Fatal Error $error->code: ";
-            break;
+        switch ($error->level) {
+            case LIBXML_ERR_WARNING:
+                $return .= "Warning $error->code: ";
+                break;
+             case LIBXML_ERR_ERROR:
+                $return .= "Error $error->code: ";
+                break;
+            case LIBXML_ERR_FATAL:
+                $return .= "Fatal Error $error->code: ";
+                break;
+        }
+
+        $return .= trim($error->message) .
+                   "\n  Line: $error->line" .
+                   "\n  Column: $error->column";
+
+        if ($error->file) {
+            $return .= "\n  File: $error->file";
+        }
+
+        return "$return\n\n--------------------------------------------\n\n";
     }
 
-    $return .= trim($error->message) .
-               "\n  Line: $error->line" .
-               "\n  Column: $error->column";
-
-    if ($error->file) {
-        $return .= "\n  File: $error->file";
+    static function deleteVersionDataFiles($versionToken) {
+        $path = __DIR__.'/'.UPLOAD_PATH.$versionToken;
+        
+        //remove profile
+        $filename = $path.'.mobileprovision';
+        if (file_exists($filename)) {
+            unlink($filename);
+        }
+        //remove plistcrc
+        $filename = $path.'.plist';
+        if (file_exists($filename)) {
+            unlink($filename);  
+        }
+        //remove data folder
+        if (file_exists($path)) {
+            Tools::rrmdir($path);
+        }
     }
 
-    return "$return\n\n--------------------------------------------\n\n";
+    static function rrmdir($dir) { 
+        if (is_dir($dir)) { 
+            $objects = scandir($dir); 
+            foreach ($objects as $object) { 
+                if ($object != "." && $object != "..") { 
+                    if (filetype($dir."/".$object) == "dir"){
+                        Tools::rrmdir($dir."/".$object);
+                    } else {
+                        unlink($dir."/".$object); 
+                    } 
+                }
+            } 
+            reset($objects); 
+            rmdir($dir); 
+        } 
+    } 
+ 
 }
 ?>

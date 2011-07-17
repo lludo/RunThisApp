@@ -23,6 +23,7 @@
     use Entities\Tester;
     use Entities\Invitation;
 
+    require_once __DIR__ . '/constants.php';
     require_once __DIR__ . '/lib/cfpropertylist/CFPropertyList.php';
     require_once __DIR__ . '/core/index.php';
     require_once __DIR__ . '/tools.php';
@@ -74,12 +75,9 @@
             return $plist->toXML(true);
     }
 
-    function isAppSignedForUdid($udid, $application)
+    function isVersionAppSignedForUdid($udid, $version)
     {
-		
-        //TODO: Token folder should be on version, not application
-
-        $plistValue = __DIR__ . '/app/' . $application->getToken() . '/app_bundle/Payload/' . $application->getName() . '.app/embedded.mobileprovision';
+        $plistValue = __DIR__ . '/' . UPLOAD_PATH . $version->getToken() . '/app_bundle/Payload/' . $version->getApplication()->getBundleName() . '.app/embedded.mobileprovision';
         $plistValue = retreivePlistFromAsn($plistValue);
         if (empty($plistValue)) {
             die("unable to read plist from configuration profile challenge.");
@@ -98,19 +96,19 @@
         return false;
     }
     
-    function generateDownloadPlistFile($application) {
+    function generateDownloadPlistFile($version) {
         
         $payload_assets_content = array();
         $payload_assets_content['kind'] = 'software-package';
-        $payload_assets_content['url'] = Tools::rel2abs('app/' . $application->getToken() . '/app_bundle.ipa', Tools::current_url());
+        $payload_assets_content['url'] = Tools::rel2abs(UPLOAD_PATH . $version->getToken() . '/app_bundle.ipa', Tools::current_url());
         
         $payload_content = array();
         $payload_content['assets'] = array( $payload_assets_content );
         
         $payload_metadata_content = array();
-        $payload_metadata_content['bundle-identifier'] = $application->getBundleId();
+        $payload_metadata_content['bundle-identifier'] = $version->getApplication()->getBundleId();
         $payload_metadata_content['kind'] = 'software';
-        $payload_metadata_content['title'] = $application->getName();
+        $payload_metadata_content['title'] = $version->getName();
                 
         $payload_content['metadata'] = $payload_metadata_content;
         
@@ -124,10 +122,16 @@
         $plist->add( $cfPayload );
         $data = $plist->toXML(true);
         
-        $my_file = __DIR__ . '/app/' . $application->getToken() . '.plist';
+        $my_file = __DIR__ . '/'. UPLOAD_PATH . $version->getToken() . '.plist';
         $handle = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file);
         fwrite($handle, $data);
     }
+    
+    
+    
+    
+    
+    
 
     //Step 1 check needed params:
     if (!isset($_GET['token']))
@@ -138,7 +142,6 @@
     //step 2 check that user is allowed to dl this app and this version:
     //TODO using $_GET["udid"]
     $entityManager = initDoctrine();
-    date_default_timezone_set('Europe/Paris');
 
     $invitation = $entityManager->getRepository('Entities\Invitation')->findOneBy(array('token' => $_GET['token']));
     if ( $invitation == NULL ) {
@@ -151,7 +154,7 @@
     } else {
         $action = 'DOWNLOAD';
     }
-	$application = $invitation->getVersion()->getApplication();
+    $version = $invitation->getVersion();
 
     if ($action == 'ENROLL' && $isNotRegistered) {
 
@@ -166,15 +169,15 @@
 
     //step3 check that this app is already signed for this udid
     //if not sign it.
-    $isAppSigned = isAppSignedForUdid($_GET['udid'], $application);
+    $isAppSigned = isVersionAppSignedForUdid($_GET['udid'], $version);
     
     $isAppSigned = false;
     
     //step4 provid link to dld app
-    generateDownloadPlistFile($application);
+    generateDownloadPlistFile($version);
     
-    $appLink = Tools::rel2abs('app/'. $application->getToken() .'.plist', Tools::current_url());
-    $profileLink = Tools::rel2abs('app/'. $application->getToken() .'.mobileprovision', Tools::current_url());
+    $appLink = Tools::rel2abs(UPLOAD_PATH . $version->getToken() .'.plist', Tools::current_url());
+    $profileLink = Tools::rel2abs(UPLOAD_PATH . $version->getToken() .'.mobileprovision', Tools::current_url());
     
 ?>
 <html>
@@ -204,7 +207,7 @@
 </head>
 <body>
     <span id="link">
-        Here is your link: <a href="itms-services://?action=download-manifest&url=<?php echo $appLink; ?>">Application id <?php echo $application->getBundleId(); ?></a>
+        Here is your link: <a href="itms-services://?action=download-manifest&url=<?php echo $appLink; ?>">Application id <?php echo $version->getApplication()->getBundleId(); ?></a>
         (Profile link: <a href="<?php echo $profileLink; ?>">Application profile</a>)
     </span>
     <?php
