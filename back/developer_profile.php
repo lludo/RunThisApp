@@ -16,79 +16,36 @@
  *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */ 
+ */
 
 session_start();
 
-use Entities\Application,
-    Entities\Developer,
-    Entities\Device,
-    Entities\Invitation,
-    Entities\Tester,
-    Entities\Version;
-
-require_once __DIR__ . '/../constants.php';
-require_once __DIR__ . '/../core/index.php';
 require_once __DIR__ . '/../core/Membership.php';
-require_once __DIR__ . '/../tools.php';
 
 if (!Membership::isLoggedIn()) {
     header('Location: ../index.php');
     die();
 }
 
-$entityManager = initDoctrine();
-
-// Retrieve all testers
-$applications = $entityManager->getRepository('Entities\Application')->findAll();
-
 ?><!doctype html>
-<html>
+<html lang="en-us">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Run This App | Applications</title>
+	<title>Run This App | Developer Profile</title>
 	<link href="../css/style-0001.css" media="screen" type="text/css" rel="stylesheet">
 </head>
 <body>
 
-	<?php include __DIR__ . '/../header.php';?>
-
+    <?php include __DIR__ . '/../header.php'; ?>
 	
 	<div id="content" class="box">
 		<div class="boxtop"></div>
 		<div class="column first">
 			<div class="boxheader">			
-				<h2>Manage Applications</h2>
+				<h2>Developer Profile</h2>
 			</div>
 			<div>
-			
-				<a href="application_new.php">Add a new application</a>
-				<h3 class="underline">&nbsp;</h3>
-				
-				<?php
-				
-				echo '<ul>';
-				foreach ($applications AS $application) {
-				    echo '<li>Application: <br/>'
-                                        .'->bundle name: ' . $application->getBundleName() . '<br />'
-                                        .'->bundle id: ' . $application->getBundleId() . '<br />'
-                                        .'->icon: <img src="'.'../'.UPLOAD_PATH. $application->getBundleId().'.png"><br />';
-				    	
-                                    echo '<ul>';
-                                    foreach ($application->getVersions() AS $version) {
-                                	echo '<li>Version:<br/>'
-                                        .'->version: '.$version->getVersion().'<br />'
-				    	.'->date upload: '.$version->getDateUpload()->format(DEFAULT_DATETIME_FORMAT).'<br />'
-				    	.'->app link: <a href="' . Tools::rel2abs('../app/' . $version->getToken() . '/app_bundle.ipa', Tools::current_url()) . '">' . $version->getName() . '.ipa</a><br />'
-				    	.'->install on device: <a href="itms-services://?action=download-manifest&url=' . Tools::rel2abs('../app/' . $version->getToken() . '.plist', Tools::current_url()) . '">Install on device</a></li>' . PHP_EOL;
-                                        
-                                    }
-                                    echo '</ul>' . PHP_EOL;
-				}
-				echo '</ul>' . PHP_EOL;
-				
-				?>
-	
+				<p>//TODO:</p>
 			</div>
 		</div>
 		
@@ -113,6 +70,6 @@ $applications = $entityManager->getRepository('Entities\Application')->findAll()
 		</div>	
 		<div class="boxbottom"></div>
 	</div>
-
+	
 </body>
 </html>

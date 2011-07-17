@@ -18,6 +18,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+session_start();
+
 use Entities\Application, 
 	Entities\Developer,
 	Entities\Device,
@@ -25,9 +27,16 @@ use Entities\Application,
 	Entities\Tester,
 	Entities\Version;
 
+
 require_once __DIR__ . '/../core/index.php';
 require_once __DIR__ . '/../core/functions.php';
+require_once __DIR__ . '/../core/Membership.php';
 require_once __DIR__ . '/../tools.php';
+
+if (!Membership::isLoggedIn()) {
+    header('Location: ../index.php');
+    die();
+}
 
 if (!isset($_POST['name'], $_POST['email']) ) {
     die('parameters needed.'); 

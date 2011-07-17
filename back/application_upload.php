@@ -17,37 +17,41 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-    use Entities\Application;
-    use Entities\Version;
-    
-    require_once __DIR__ . '/../lib/cfpropertylist/CFPropertyList.php';
-    require_once __DIR__ . '/../tools.php';
-    require_once __DIR__ . '/../core/index.php';
-    require_once __DIR__ . '/../constants.php';
-    require_once __DIR__ . '/../lib/PngCompote/PngCompote.php';
-        
 
-    function unzipApplication($upload_path, $filename) {
+session_start();
 
-            $zip = new ZipArchive;
-            $res = $zip->open($upload_path . $filename);
-            if ($res === TRUE) {
+use Entities\Application;
+use Entities\Version;
 
-                $appName = substr($filename, 0, -4);
-                $zip->extractTo($upload_path . $appName . '/');
-                $zip->close();
+require_once __DIR__ . '/../lib/cfpropertylist/CFPropertyList.php';
+require_once __DIR__ . '/../tools.php';
+require_once __DIR__ . '/../core/index.php';
+require_once __DIR__ . '/../core/Membership.php';
+require_once __DIR__ . '/../constants.php';
+require_once __DIR__ . '/../lib/PngCompote/PngCompote.php';
 
-                return true;
+if (!Membership::isLoggedIn()) {
+    header('Location: ../index.php');
+    die();
+}
 
-            } else {
-                return false;
-            }
+function unzipApplication($upload_path, $filename) {
+
+    $zip = new ZipArchive;
+    $res = $zip->open($upload_path . $filename);
+    if ($res === TRUE) {
+
+        $appName = substr($filename, 0, -4);
+        $zip->extractTo($upload_path . $appName . '/');
+        $zip->close();
+
+        return true;
+    } else {
+        return false;
     }
+}
 
-?>
-
-<!doctype html>
+?><!doctype html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">

@@ -22,7 +22,7 @@ class Membership {
 	} 
 	
 	static function logout() {
-		if(isset($_SESSION['status'])) {
+		if(isset($_SESSION['developerId'])) {
 			unset($_SESSION['developerId']);
 			unset($_SESSION['developerName']);
 			

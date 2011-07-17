@@ -70,7 +70,7 @@ if (in_array($currentPage, $invitationPages)) {
         <li>Hi, <?php echo $userName; ?></li>
         
 <?php if (Membership::isLoggedIn()) { ?>
-        <li><a href="<?php echo $backPath; ?>profile.php">My profile</a></li>
+        <li><a href="<?php echo $backPath; ?>developer_profile.php">My profile</a></li>
         <li><a href="<?php echo $rootPath; ?>login.php?action=logout">Log Out</a></li>
   
 <?php } else { ?>

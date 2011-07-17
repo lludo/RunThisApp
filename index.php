@@ -37,6 +37,7 @@ session_start();
 			<div class="boxheader">			
 				<h2>Run This App - First tests</h2>
 			</div>
+                    <?php if (Membership::isLoggedIn()) { ?>
 			<div>
 				<p>Click this link to subscribe to the best test program of iOS applications (Tester 1): <br><a href="enroll.php?token=1908FC34-1FFE-C2E2-47A1-924452B5B834">http://www.runthisapp.com/enroll.php?token=1908FC34-1FFE-C2E2-47A1-924452B5B834</a></p>
 				<img src="http://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=http://www.runthisapp.com/enroll.php%3Ftoken=1908FC34-1FFE-C2E2-47A1-924452B5B834" />
@@ -44,6 +45,13 @@ session_start();
 				<p>Click this link to subscribe to the best test program of iOS applications (Tester 2): <br><a href="enroll.php?token=91FF2445-2B5B-8343-41FF-EC2E247A144D">http://www.runthisapp.com/enroll.php?token=91FF2445-2B5B-8343-41FF-EC2E247A144D</a></p>
 				<img src="http://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=http://www.runthisapp.com/enroll.php%3Ftoken=91FF2445-2B5B-8343-41FF-EC2E247A144D" />
 			</div>
+                    <?php } else { ?>
+                        <div>
+                                <p>You are currently not connected!<p>
+				<p>Run This App is a web project to help iOS developers to easely share their apps to beta testers.<p>
+                                <p>Find out more about this opensource project: <a href="https://github.com/lludo/runthisapp">https://github.com/lludo/runthisapp</a><p>
+			</div>
+                    <?php } ?>
 		</div>
 		
 		<div class="column last">

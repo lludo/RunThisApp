@@ -18,6 +18,26 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+session_start();
+
+use Entities\Application,
+    Entities\Developer,
+    Entities\Device,
+    Entities\Invitation,
+    Entities\Tester,
+    Entities\Version;
+
+require_once __DIR__ . '/../core/index.php';
+require_once __DIR__ . '/../core/functions.php';
+require_once __DIR__ . '/../core/Membership.php';
+
+if (!Membership::isLoggedIn()) {
+    header('Location: ../index.php');
+    die();
+}
+
+$entityManager = initDoctrine();
+
 ?><!doctype html>
 <html>
 <head>
@@ -28,8 +48,7 @@
 <body>
 
 	<?php include __DIR__ . '/../header.php';?>
-
-	
+        
 	<div id="content" class="box">
 		<div class="boxtop"></div>
 		<div class="column first">
@@ -42,18 +61,6 @@
 				<h3 class="underline">&nbsp;</h3>
 				
 				<?php
-				
-				use Entities\Application, 
-				    Entities\Developer,
-				    Entities\Device,
-				    Entities\Invitation,
-				    Entities\Tester,
-				    Entities\Version;
-				
-				require_once __DIR__ . '/../core/index.php';
-				require_once __DIR__ . '/../core/functions.php';
-				
-				$entityManager = initDoctrine();
 				
 				// Retrieve all testers
 				$testers = $entityManager->getRepository('Entities\Tester')->findAll();

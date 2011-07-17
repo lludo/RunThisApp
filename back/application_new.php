@@ -18,6 +18,15 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+session_start();
+
+require_once __DIR__ . '/../core/Membership.php';
+
+if (!Membership::isLoggedIn()) {
+    header('Location: ../index.php');
+    die();
+}
+
 ?><!doctype html>
 <html>
 <head>

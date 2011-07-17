@@ -18,6 +18,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+session_start();
+
 use Entities\Application, 
 	Entities\Developer,
 	Entities\Device,
@@ -27,11 +29,16 @@ use Entities\Application,
 
 require_once __DIR__ . '/../core/index.php';
 require_once __DIR__ . '/../core/functions.php';
+require_once __DIR__ . '/../core/Membership.php';
+
+if (!Membership::isLoggedIn()) {
+    header('Location: ../index.php');
+    die();
+}
 
 $entityManager = initDoctrine();
 
-?>
-<!doctype html>
+?><!doctype html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
