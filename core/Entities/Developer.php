@@ -33,22 +33,17 @@ class Developer {
     private $id;
     
     /**
-     * @Column(type="string", name="first_name", length=50)
+     * @Column(type="string", length=255)
      */
-    private $firstName;
+    private $name;
     
     /**
-     * @Column(type="string", name="last_name", length=50)
+     * @Column(type="string", length=255)
      */
-    private $lastName;
+    private $email;
     
     /**
-     * @Column(type="string", length=50, nullable=true)
-     */
-    private $login;
-    
-    /**
-     * @Column(type="string", length=50, nullable=true)
+     * @Column(type="string", length=40)
      */
     private $password;
     
@@ -73,20 +68,32 @@ class Developer {
         $this->testers = new ArrayCollection();
     }
     
-    public function setFirstName($firstName) {
-	$this->firstName = $firstName;
+    public function getId() {
+    	return $this->id;
     }
     
-    public function getFirstName() {
-    	return $this->firstName;
+    public function setName($name) {
+	$this->name = $name;
     }
     
-    public function setLastName($lastName) {
-    	$this->lastName = $lastName;
+    public function getName() {
+    	return $this->name;
     }
     
-    public function getLastName() {
-    	return $this->lastName;
+    public function setEmail($email) {
+	$this->email = $email;
+    }
+    
+    public function getEmail() {
+    	return $this->email;
+    }
+    
+    public function setPassword($password) {
+	$this->password = $password;
+    }
+    
+    public function getPassword() {
+    	return $this->password;
     }
     
     public function addApplication($application){

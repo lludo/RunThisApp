@@ -18,6 +18,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+session_start();
+
 ?><!doctype html>
 <html lang="en-us">
 <head>
@@ -27,20 +29,7 @@
 </head>
 <body>
 
-	<div id="header">
-		<h2><a href="./">Run This App</a></h2>
-		<ul class="menu">
-			<li class="invitations"><a href="back/invitation_list.php">Invitations</a></li>
-			<li class="testers"><a href="back/tester_list.php">Testers</a></li>
-        	<li class="applications"><a href="back/application_list.php">Applications</a></li>
-		</ul>
-		
-		<ul class="login">
-			<li>Hi, Guest</li>
-			<li><a href="back/register.php">Register</a></li>	
-			<li><a href="back/login.php">Log In</a></li>
-		</ul>
-	</div>
+    <?php include 'header.php'; ?>
 	
 	<div id="content" class="box">
 		<div class="boxtop"></div>
