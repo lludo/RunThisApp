@@ -17,8 +17,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-date_default_timezone_set('Europe/Berlin');
 
 use Entities\Application, 
 	Entities\Developer,
@@ -49,15 +47,8 @@ textarea {
 </head>
 <body>
 
-	<div id="header">
-		<h2><a href="../">Run This App</a></h2>
-		<ul class="menu">
-		<li class="invitations active">Invitations</li>
-		<li class="testers"><a href="tester_list.php">Testers</a></li>
-        	<li class="applications"><a href="application_list.php">Applications</a></li>
-		</ul>
-		
-	</div>
+	<?php include __DIR__ . '/../header.php';?>
+
 	
 	<form action="invitation_send.php" method="POST">
 	<p>

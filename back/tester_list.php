@@ -27,20 +27,8 @@
 </head>
 <body>
 
-	<div id="header">
-		<h2><a href="../">Run This App</a></h2>
-		<ul class="menu">
-			<li class="invitations"><a href="invitation_list.php">Invitations</a></li>
-			<li class="testers active">Testers</li>
-        	<li class="applications"><a href="application_list.php">Applications</a></li>
-		</ul>
-		
-		<ul class="login">
-			<li>Hi, Guest</li>
-			<li><a href="register.php">Register</a></li>	
-			<li><a href="login.php">Log In</a></li>
-		</ul>
-	</div>
+	<?php include __DIR__ . '/../header.php';?>
+
 	
 	<div id="content" class="box">
 		<div class="boxtop"></div>
@@ -68,12 +56,11 @@
 				$entityManager = initDoctrine();
 				
 				// Retrieve all testers
-				date_default_timezone_set('Europe/Berlin');
 				$testers = $entityManager->getRepository('Entities\Tester')->findAll();
 				
 				echo '<ul>';
 				foreach ($testers AS $tester) {
-				    echo '<li>Tester: ' . $tester->getName() . '</br >' . PHP_EOL;
+				    echo '<li>Tester: ' . $tester->getName() . ' (' . $tester->getEmail() . ')</br >' . PHP_EOL;
 				    	
 				    	$devices = $tester->getDevices();
 				    	

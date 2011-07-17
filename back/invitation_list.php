@@ -26,21 +26,7 @@
 	<link href="../css/style-0001.css" media="screen" type="text/css" rel="stylesheet">
 </head>
 <body>
-	
-	<div id="header">
-		<h2><a href="../">Run This App</a></h2>
-		<ul class="menu">
-			<li class="invitations active">Invitations</li>
-			<li class="testers"><a href="tester_list.php">Testers</a></li>
-	    	<li class="applications"><a href="application_list.php">Applications</a></li>
-		</ul>
-		
-		<ul class="login">
-			<li>Hi, Guest</li>
-			<li><a href="register.php">Register</a></li>	
-			<li><a href="login.php">Log In</a></li>
-		</ul>
-	</div>
+	<?php include __DIR__ . '/../header.php';?>
 	
 	<div id="content" class="box">
 		<div class="boxtop"></div>
@@ -67,7 +53,6 @@
 				$entityManager = initDoctrine();
 				
 				// Retrieve all testers
-				date_default_timezone_set('Europe/Berlin');
 				$invitations = $entityManager->getRepository('Entities\Invitation')->findAll();
 				
 				echo '<ul>';

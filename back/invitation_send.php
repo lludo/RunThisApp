@@ -133,15 +133,7 @@ $entityManager->flush();
 </head>
 <body>
 
-	<div id="header">
-		<h2><a href="../">Run This App</a></h2>
-		<ul class="menu">
-			<li class="invitations"><a href="invitation_list.php">Invitations</a></li>
-			<li class="testers active">Testers</li>
-        	<li class="applications"><a href="application_list.php">Applications</a></li>
-		</ul>
-		
-	</div>
+	<?php include __DIR__ . '/../header.php';?>
 	
         <p id="error" ><?php echo $sendMailError; ?></p>
 	<p><?php echo $nbInvitations; ?> invitations sent.</p>
