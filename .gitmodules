@@ -10,4 +10,6 @@
 [submodule "lib/vendor/Symfony/Component/Yaml"]
 	path = lib/vendor/Symfony/Component/Yaml
 	url = git://github.com/symfony/Yaml.git
-
+[submodule "lib/PngCompote"]
+	path = lib/PngCompote
+	url = git://github.com/pcans/PngCompote.git
