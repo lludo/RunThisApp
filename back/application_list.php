@@ -62,7 +62,7 @@ $applications = $entityManager->getRepository('Entities\Application')->findAll()
 			</div>
 			<div>
 			
-				<a href="application_new.php">Add a new application</a>
+				<a href="application_new.php">Upload a new binary (IPA)</a>
 				<h3 class="underline">&nbsp;</h3>
 				
 				<?php

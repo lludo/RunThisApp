@@ -9,11 +9,6 @@ require_once __DIR__ . '/../core/functions.php';
 require_once __DIR__ . '/../core/Membership.php';
 require_once __DIR__ . '/../tools.php';
 
-if (!Membership::isLoggedIn()) {
-    header('Location: ../index.php');
-    die();
-}
-
 if (!isset($_POST['name'], $_POST['email'], $_POST['pwd']) ) {
     die('parameters needed.'); 
 }

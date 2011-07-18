@@ -58,7 +58,7 @@ $mailer = Swift_Mailer::newInstance($smtp);
 
 $url = Tools::rel2abs('../runthisapp.php', Tools::current_url());
 
-function sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entityManager) {
+function sendInvitationForDevice($device, $mailer, $url, $version, $msg, $nbInvitations, $entityManager) {
 	
 	$udid = $device->getUdid();
 	$mail = $device->getTester()->getEmail();
@@ -114,7 +114,7 @@ if ( $_POST['selected_device_new'] ) {
         $entityManager->persist($device);
         $entityManager->flush();
         
-        sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entityManager);
+        sendInvitationForDevice($device, $mailer, $url, $version, $msg, $nbInvitations, $entityManager);
     }
 }
 
@@ -122,7 +122,7 @@ if (isset($_POST['selected_devices'])) {
 	foreach ($_POST['selected_devices'] as $deviceId) {
 		$device = $entityManager->getRepository('Entities\Device')->find($deviceId);
 		//echo var_dump($device);
-		sendInvitationForDevice($device, $mailer, $url, $version, $msg, $entityManager);
+		sendInvitationForDevice($device, $mailer, $url, $version, $msg, $nbInvitations, $entityManager);
 	}
 }
 

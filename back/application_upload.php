@@ -28,7 +28,7 @@ require_once __DIR__ . '/../tools.php';
 require_once __DIR__ . '/../core/index.php';
 require_once __DIR__ . '/../core/Membership.php';
 require_once __DIR__ . '/../constants.php';
-require_once __DIR__ . '/../lib/PngCompote/PngCompote.php';
+require_once __DIR__ . '/../lib/PngCompote/pngCompote.php';
 
 if (!Membership::isLoggedIn()) {
     header('Location: ../index.php');
@@ -128,8 +128,9 @@ if (!empty($_FILES['app_file'])) {
                     $plistfile = Tools::getInfoPlistPath($folder_token);
                     echo 'Plist file: ' . $plistfile . '<br />';
                     $plistValue = file_get_contents($plistfile);
-
+                    
                     if (!empty($plistValue)) {
+                        
                         $plist = new CFPropertyList();
                         $plist->parse($plistValue, CFPropertyList::FORMAT_AUTO);
                         $plistData = $plist->toArray();
@@ -173,14 +174,16 @@ if (!empty($_FILES['app_file'])) {
                         
                         //even if application already exists, update icon with last version uploaded.
                         //Get icon, if empty use 'Icon.png'	
-                        if (isset($plistData['CFBundleIconFile']) && $plistData['CFBundleIconFile'] != 0) {
+                        if (isset($plistData['CFBundleIconFile'])) {
                             $iconFile = $plistData['CFBundleIconFile'];
                         } else {
                             $iconFile = 'Icon.png';
                         }
                         //uncrush icon
                         $pngPath = '../' . UPLOAD_PATH . $folder_token . '/app_bundle/Payload/'.$version->getName().'.app/'.$iconFile;
+                        
                         if (file_exists($pngPath)){
+                            
                             $png = new PngFile($pngPath);
                             $newPngPath = '../' . UPLOAD_PATH . $application->getBundleId().'.png';
                             $png->revertIphone($newPngPath);
