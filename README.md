@@ -12,7 +12,7 @@ When the website is configure on a server, difference developers can work on the
 - Upload an application that you want to test
 - Send invite to testers to make them register their devices and install the app
 
-When you send an invite to a tester, the system retrieve the tester device UDID, resign you app with the tester informations and sent back a new mail with download application info to the tester.
+When you send an invite to a tester, the system retrieve the tester device UDID, resign you app with the tester information  and sent back a new mail with download application info to the tester.
 
 Run This App is a web project written in PHP ([RunThisApp website][1]).
 
